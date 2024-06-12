@@ -19,31 +19,39 @@ model parameter {
   cabohydrate Int
   fat         Int
   userId      Int
-  scoreId     Int?
-  score       score?   @relation(fields: [scoreId], references: [scoreId], onDelete: Restrict, onUpdate: Restrict, map: "scoreId")
+  scoreId     Int
+  suggestId   Int
+  score       score    @relation(fields: [scoreId], references: [scoreId], onUpdate: Restrict, map: "scoreId")
+  suggest     suggest  @relation(fields: [suggestId], references: [suggestId], onUpdate: Restrict, map: "suggestId")
   users       users    @relation(fields: [userId], references: [id], onUpdate: Restrict, map: "userId")
 
   @@index([scoreId], map: "scoreId")
   @@index([userId], map: "userId")
-}
-
-model score {
-  scoreId   Int         @id @default(autoincrement())
-  value     Int
-  name      String      @db.VarChar(255)
-  suggestId Int
-  parameter parameter[]
-  suggest   suggest     @relation(fields: [suggestId], references: [suggestId], onUpdate: Restrict, map: "suggestId")
-
   @@index([suggestId], map: "suggestId")
 }
 
+model score {
+  scoreId          Int         @id @default(autoincrement())
+  totalScore       Float       @db.Float
+  BMIScore         Float       @db.Float
+  sleepScore       Float       @db.Float
+  calorieScore     Float       @db.Float
+  proteinScore     Float       @db.Float
+  cabohydrateScore Float       @db.Float
+  fatScore         Float       @db.Float
+  name             String      @db.VarChar(255)
+  parameter        parameter[]
+}
+
 model suggest {
-  suggestId Int     @id @default(autoincrement())
-  name      String  @db.VarChar(255)
-  data      String  @db.VarChar(255)
-  image     Bytes?  @db.Blob
-  score     score[]
+  suggestId          Int         @id @default(autoincrement())
+  BMISuggest         String      @db.VarChar(255)
+  sleepSuggest       String      @db.VarChar(255)
+  calorieSuggest     String      @db.VarChar(255)
+  proteinSuggest     String      @db.VarChar(255)
+  cabohydrateSuggest String      @db.VarChar(255)
+  fatSuggest         String      @db.VarChar(255)
+  parameter          parameter[]
 }
 
 model users {
