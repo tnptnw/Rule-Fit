@@ -3,6 +3,6 @@ import { getHistory } from '../controllers/history/historyController';
 
 const historyRouter = express.Router();
 
-historyRouter.post('/getHistory', getHistory);
+historyRouter.get('/getHistory', getHistory);
 
 export default historyRouter;
