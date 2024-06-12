@@ -3,6 +3,7 @@ import 'package:rule_fit/pages/signup.dart';
 import 'package:rule_fit/pages/login.dart';
 import 'package:rule_fit/pages/home.dart';
 
+
 void main() {
   runApp(const MyApp());
 }
@@ -35,6 +36,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         scaffoldBackgroundColor: const Color(0xFFFFF7F1)
       ),
+
       home: HomePage(),
     );
   }
