@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:rule_fit/pages/signup.dart';
+import 'package:rule_fit/pages/login.dart';
+import 'package:rule_fit/pages/home.dart';
 
 void main() {
   runApp(const MyApp());
@@ -30,8 +33,9 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
+        scaffoldBackgroundColor: const Color(0xFFFFF7F1)
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: HomePage(),
     );
   }
 }
