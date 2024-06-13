@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:rule_fit/pages/home.dart';
 
 class LogInPage extends StatefulWidget {
   @override
@@ -8,30 +11,59 @@ class LogInPage extends StatefulWidget {
 class _LogInPageState extends State<LogInPage> {
   final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
-  final _birthYearController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
-
-  String _selectedGender = 'Men';
-  final List<String> _genders = ['Men', 'Female', 'Others'];
+  String _jwtToken = "";
 
   @override
   void dispose() {
     _usernameController.dispose();
-    _birthYearController.dispose();
     _passwordController.dispose();
-    _confirmPasswordController.dispose();
     super.dispose();
   }
 
-  void _submitForm() {
+  void _submitForm() async {
     if (_formKey.currentState!.validate()) {
-      // Process the form data
-      print('Username: ${_usernameController.text}');
-      print('Birth Year: ${_birthYearController.text}');
-      print('Password: ${_passwordController.text}');
-      print('Gender: $_selectedGender');
-      // You can navigate to another page or perform other actions here
+      // Prepare the login data
+      final loginData = {
+        'username': _usernameController.text,
+        'password': _passwordController.text,
+      };
+
+      // Define the endpoint URL of your backend
+      final url = Uri.parse('http://localhost:4000/auth/login');
+
+      // Send the POST request
+      try {
+        final response = await http.post(
+          url,
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode(loginData),
+        );
+
+        if (response.statusCode == 200) {
+          // Handle successful login, e.g., navigate to another page
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Login successful')),
+          );
+          final responseData = jsonDecode(response.body);
+          setState(() {
+        _jwtToken = responseData['token'];
+      });
+
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => HomePage(jwtToken: _jwtToken)));
+          // Navigator.pushReplacementNamed(context, '/home');
+        } else {
+          // Handle errors
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Login failed: ${response.body}')),
+          );
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      }
     }
   }
 
@@ -50,9 +82,6 @@ class _LogInPageState extends State<LogInPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   automaticallyImplyLeading: false,
-      // ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Center(
@@ -80,7 +109,7 @@ class _LogInPageState extends State<LogInPage> {
                     }
                     return null;
                   },
-                ),                              
+                ),
                 const SizedBox(height: 15),
                 TextFormField(
                   controller: _passwordController,
@@ -97,11 +126,11 @@ class _LogInPageState extends State<LogInPage> {
                 ElevatedButton(
                   onPressed: _submitForm,
                   style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(120.0, 40.0),
+                    minimumSize: const Size(double.infinity, 40.0),
                     backgroundColor: const Color(0xFF759873),
                     padding: const EdgeInsets.symmetric(vertical: 15.0),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0), 
+                      borderRadius: BorderRadius.circular(30.0),
                     ),
                   ),
                   child: const Text(

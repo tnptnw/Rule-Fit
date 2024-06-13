@@ -1,5 +1,6 @@
 import express, {Express} from 'express';
 import dotenv from "dotenv";
+import cors from 'cors';
 dotenv.config();
 import authRouter from './routes/auth';
 import parameterRouter from './routes/parameter';
@@ -13,6 +14,12 @@ const port = process.env.PORT;
 
 
 app.use(express.json());
+
+app.use(cors({
+  origin: "*"
+  
+}))
+
 app.use("/auth", authRouter);
 app.use("/parameter", parameterRouter);
 app.use("/history", historyRouter);
