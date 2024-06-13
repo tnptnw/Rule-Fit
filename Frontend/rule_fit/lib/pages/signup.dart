@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -12,8 +14,8 @@ class _SignUpPageState extends State<SignUpPage> {
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
-  String _selectedGender = 'Men';
-  final List<String> _genders = ['Men', 'Female', 'Others'];
+  String _selectedGender = 'male';
+  final List<String> _genders = ['male', 'female'];
 
   @override
   void dispose() {
@@ -24,14 +26,44 @@ class _SignUpPageState extends State<SignUpPage> {
     super.dispose();
   }
 
-  void _submitForm() {
+  void _submitForm() async {
     if (_formKey.currentState!.validate()) {
-      // Process the form data
-      print('Username: ${_usernameController.text}');
-      print('Birth Year: ${_birthYearController.text}');
-      print('Password: ${_passwordController.text}');
-      print('Gender: $_selectedGender');
-      // You can navigate to another page or perform other actions here
+      // Prepare the form data
+      final formData = {
+        'username': _usernameController.text,
+        'password': _passwordController.text,
+        'birthyear': int.tryParse(_birthYearController.text),
+        'gender': _selectedGender,
+      };
+      print(formData);
+
+      // Define the endpoint URL of your backend
+      final url = Uri.parse('http://localhost:4000/auth/regis');
+
+      // Send the POST request
+      try {
+        final response = await http.post(
+          url,
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode(formData),
+        );
+
+        if (response.statusCode == 200) {
+          // Handle successful signup, e.g., navigate to another page
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Signup successful')),
+          );
+        } else {
+          // Handle errors
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Signup failed: ${response.body}')),
+          );
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      }
     }
   }
 
@@ -50,9 +82,6 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   automaticallyImplyLeading: false,
-      // ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Center(

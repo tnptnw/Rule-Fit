@@ -57,8 +57,9 @@ class parameterService {
     console.log("bmiSuggest: ", bmiSuggest);
 
     // Extract hours from sleepStart and sleepEnd
-    const sleepStartHour = new Date(reqBody.sleepStart).getHours() - 7;
-    const sleepEndHour = new Date(reqBody.sleepEnd).getHours() - 7;
+    const sleepStartHour = parseInt(reqBody.sleepStart.split(':')[0]);
+    const sleepEndHour = parseInt(reqBody.sleepEnd.split(':')[0]);
+    
     console.log("sleepStartHour: ", sleepStartHour);
     console.log("sleepEndHour: ", sleepEndHour);
 
@@ -181,19 +182,19 @@ class parameterService {
     const recommendedCarbs = (recommendedCalories * 0.55) / 4; // 55% of calories from carbs
     let carbScore =
       8 -
-      (Math.abs(reqBody.cabohydrate - recommendedCarbs) / recommendedCarbs) * 8;
+      (Math.abs(reqBody.carbohydrate - recommendedCarbs) / recommendedCarbs) * 8;
     carbScore = Math.max(0, Math.min(8, carbScore));
     console.log("carbScore: ", carbScore);
 
     // Generate carbohydrate suggestion
     let carbSuggest;
-    if (reqBody.cabohydrate < recommendedCarbs) {
+    if (reqBody.carbohydrate < recommendedCarbs) {
       carbSuggest = `You are consuming fewer carbohydrates than recommended. Aim to increase your daily intake by ${
-        recommendedCarbs - reqBody.cabohydrate
+        recommendedCarbs - reqBody.carbohydrate
       } g to reach the recommended ${recommendedCarbs} g.`;
-    } else if (reqBody.cabohydrate > recommendedCarbs) {
+    } else if (reqBody.carbohydrate > recommendedCarbs) {
       carbSuggest = `You are consuming more carbohydrates than recommended. Aim to decrease your daily intake by ${
-        reqBody.cabohydrate - recommendedCarbs
+        reqBody.carbohydrate - recommendedCarbs
       } g to reach the recommended ${recommendedCarbs} g.`;
     } else {
       carbSuggest =
@@ -284,7 +285,7 @@ class parameterService {
         sleepEnd: reqBody.sleepEnd,
         calorie: reqBody.calorie,
         protein: reqBody.protein,
-        cabohydrate: reqBody.cabohydrate,
+        cabohydrate: reqBody.carbohydrate,
         fat: reqBody.fat,
         scoreId: createScore.scoreId,
         suggestId: createSuggest.suggestId,
