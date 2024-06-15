@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rule_fit/pages/signup.dart';
 import 'package:rule_fit/pages/login.dart';
-import 'package:rule_fit/pages/home.dart';
 import 'package:rule_fit/auth/auth_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -9,7 +7,7 @@ void main() {
   runApp(
     ChangeNotifierProvider(
       create: (context) => AuthProvider()..loadToken(),
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 }
@@ -41,7 +39,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
           scaffoldBackgroundColor: const Color(0xFFFFF7F1)),
-      home: LogInPage(),
+      home: const LogInPage(),
     );
   }
 }

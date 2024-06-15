@@ -3,6 +3,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class SignUpPage extends StatefulWidget {
+  const SignUpPage({super.key});
+
   @override
   _SignUpPageState createState() => _SignUpPageState();
 }
@@ -51,7 +53,7 @@ class _SignUpPageState extends State<SignUpPage> {
         if (response.statusCode == 200) {
           // Handle successful signup, e.g., navigate to another page
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Signup successful')),
+            const SnackBar(content: Text('Signup successful')),
           );
         } else {
           // Handle errors
@@ -75,7 +77,7 @@ class _SignUpPageState extends State<SignUpPage> {
       ),
       filled: true,
       fillColor: Colors.white,
-      contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+      contentPadding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
     );
   }
 
@@ -172,9 +174,9 @@ class _SignUpPageState extends State<SignUpPage> {
                 ElevatedButton(
                   onPressed: _submitForm,
                   style: ElevatedButton.styleFrom(
-                    minimumSize: Size(double.infinity, 20.0),
-                    backgroundColor: Color(0xFF759873),
-                    padding: EdgeInsets.symmetric(vertical: 15.0),
+                    minimumSize: const Size(double.infinity, 20.0),
+                    backgroundColor: const Color(0xFF759873),
+                    padding: const EdgeInsets.symmetric(vertical: 15.0),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(
                           30.0), // Increased border radius for button
@@ -192,7 +194,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     print(
                         'Already have an account?'); // Example action: print a message
                   },
-                  child: Center(
+                  child: const Center(
                     child: Text(
                       'Already have an account?',
                       style: TextStyle(

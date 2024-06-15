@@ -4,6 +4,8 @@ import 'dart:convert';
 import 'package:rule_fit/pages/home.dart';
 
 class LogInPage extends StatefulWidget {
+  const LogInPage({super.key});
+
   @override
   _LogInPageState createState() => _LogInPageState();
 }
@@ -43,15 +45,17 @@ class _LogInPageState extends State<LogInPage> {
         if (response.statusCode == 200) {
           // Handle successful login, e.g., navigate to another page
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Login successful')),
+            const SnackBar(content: Text('Login successful')),
           );
           final responseData = jsonDecode(response.body);
           setState(() {
-        _jwtToken = responseData['token'];
-      });
+            _jwtToken = responseData['token'];
+          });
 
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => HomePage(jwtToken: _jwtToken)));
+              context,
+              MaterialPageRoute(
+                  builder: (context) => HomePage(jwtToken: _jwtToken)));
           // Navigator.pushReplacementNamed(context, '/home');
         } else {
           // Handle errors
@@ -75,7 +79,7 @@ class _LogInPageState extends State<LogInPage> {
       ),
       filled: true,
       fillColor: Colors.white,
-      contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+      contentPadding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
     );
   }
 
