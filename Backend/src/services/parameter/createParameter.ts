@@ -57,8 +57,12 @@ class parameterService {
     console.log("bmiSuggest: ", bmiSuggest);
 
     // Extract hours from sleepStart and sleepEnd
-    const sleepStartHour = parseInt(reqBody.sleepStart.split(':')[0]);
-    const sleepEndHour = parseInt(reqBody.sleepEnd.split(':')[0]);
+    const sleepStart = new Date(reqBody.sleepStart);
+const sleepEnd = new Date(reqBody.sleepEnd);
+
+// Extract the hours
+const sleepStartHour = sleepStart.getHours();
+const sleepEndHour = sleepEnd.getHours();
     
     console.log("sleepStartHour: ", sleepStartHour);
     console.log("sleepEndHour: ", sleepEndHour);

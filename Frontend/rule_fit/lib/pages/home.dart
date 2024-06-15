@@ -5,7 +5,7 @@ import 'dart:convert';
 class HomePage extends StatefulWidget {
   final String jwtToken;
 
-  HomePage({required this.jwtToken});
+  const HomePage({super.key, required this.jwtToken});
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -19,8 +19,17 @@ class _HomePageState extends State<HomePage> {
   final TextEditingController _proteinController = TextEditingController();
   final TextEditingController _carbsController = TextEditingController();
   final TextEditingController _fatController = TextEditingController();
-
   double _healthScore = 0.0;
+  bool showInputFields = true;
+  bool suggestionsExpanded = false;
+  bool showSuggestions = false; // Add this line to your state
+  List<Map<String, String>> suggestions = [];
+  String bmiSuggest = "";
+  String sleepSuggest = "";
+  String calorieSuggest = "";
+  String proteinSuggest = "";
+  String carbSuggest = "";
+  String fatSuggest = "";
 
   @override
   void dispose() {
@@ -71,16 +80,24 @@ class _HomePageState extends State<HomePage> {
         },
         body: jsonEncode(formData),
       );
-      print(sleepTime);
-      print(wakeUpTime);
       if (response.statusCode == 200) {
         // Parse the response body
         final responseData = jsonDecode(response.body);
+        // print(responseData);
         setState(() {
-          _healthScore = responseData['totalScore'];
+          _healthScore =
+              (responseData['data']['score']['totalScore'] as num).toDouble();
+          showInputFields = false;
+          bmiSuggest = responseData['data']['suggest']['BMISuggest'];
+          sleepSuggest = responseData['data']['suggest']['sleepSuggest'];
+          calorieSuggest = responseData['data']['suggest']['calorieSuggest'];
+          proteinSuggest = responseData['data']['suggest']['proteinSuggest'];
+          carbSuggest = responseData['data']['suggest']['cabohydrateSuggest'];
+          fatSuggest = responseData['data']['suggest']['fatSuggest'];
+          showSuggestions = true; // Add this line to show suggestions
         });
-        print(responseData);
-        await _fetchHealthScore();
+
+        // await _fetchHealthScore();
       } else {
         // Handle errors
         ScaffoldMessenger.of(context).showSnackBar(
@@ -88,9 +105,7 @@ class _HomePageState extends State<HomePage> {
         );
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
+      print(e);
     }
   }
 
@@ -102,37 +117,16 @@ class _HomePageState extends State<HomePage> {
       ),
       filled: true,
       fillColor: Colors.white,
-      contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+      contentPadding:
+          const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
     );
-  }
-
-  Future<void> _fetchHealthScore() async {
-    final url = Uri.parse(
-        'http://localhost:4000/score/getScore'); // Adjust the URL to your backend endpoint
-    try {
-      final response = await http.get(url);
-
-      if (response.statusCode == 200) {
-        final responseData = jsonDecode(response.body);
-        setState(() {
-          _healthScore = responseData['totalScore'];
-          print(responseData);
-        });
-      } else {
-        // Handle error responses
-        print('Failed to fetch health score: ${response.statusCode}');
-      }
-    } catch (e) {
-      // Handle network errors
-      print('Error fetching health score: $e');
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -140,243 +134,305 @@ class _HomePageState extends State<HomePage> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(
+                const Text(
                   'Health Score',
                   style:
                       TextStyle(fontSize: 20.0, fontWeight: FontWeight.normal),
                 ),
                 Text(
                   '$_healthScore',
-                  style: TextStyle(fontSize: 26.0, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 26.0, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
-            SizedBox(height: 20.0),
-            // BMI
-            Text(
-              'BMI',
-              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 10.0),
-            // Height
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Height (cm)',
-                  style: TextStyle(fontSize: 16.0),
-                ),
-                SizedBox(
-                  width: 200,
-                  child: TextFormField(
-                    controller: _heightController,
-                    decoration: _buildInputDecoration('Height (cm)'),
-                    keyboardType: TextInputType.number,
-                    textAlign: TextAlign.end,
-                    style: TextStyle(fontSize: 14.0),
+            if (showInputFields) ...[
+              const SizedBox(height: 20.0),
+              // BMI
+              const Text(
+                'BMI',
+                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10.0),
+              // Height
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Height (cm)',
+                    style: TextStyle(fontSize: 16.0),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(height: 10.0),
-            // Weight
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Weight (kg)',
-                  style: TextStyle(fontSize: 16.0),
-                ),
-                SizedBox(
-                  width: 200,
-                  child: TextFormField(
-                    controller: _weightController,
-                    decoration: _buildInputDecoration('Weight (kg)'),
-                    keyboardType: TextInputType.number,
-                    textAlign: TextAlign.end,
-                    style: TextStyle(fontSize: 14.0),
+                  SizedBox(
+                    width: 200,
+                    child: TextFormField(
+                      controller: _heightController,
+                      decoration: _buildInputDecoration('Height (cm)'),
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.end,
+                      style: const TextStyle(fontSize: 14.0),
+                    ),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(height: 20.0),
-            // Sleep
-            Text(
-              'Sleep',
-              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 10.0),
-            // Sleep Time
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Sleep Time',
-                  style: TextStyle(fontSize: 16.0),
-                ),
-                SizedBox(
-                  width: 200,
-                  child: InkWell(
-                    onTap: () async {
-                      final selectedTime = await showTimePicker(
-                        context: context,
-                        initialTime: _sleepTime,
-                      );
-                      if (selectedTime != null) {
-                        setState(() {
-                          _sleepTime = selectedTime;
-                        });
-                      }
-                    },
-                    child: InputDecorator(
-                      decoration: _buildInputDecoration('Sleep Time'),
-                      child: Text(
-                        '${_sleepTime.format(context)}',
-                        textAlign: TextAlign.end,
-                        style: TextStyle(fontSize: 14.0),
+                ],
+              ),
+              const SizedBox(height: 10.0),
+              // Weight
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Weight (kg)',
+                    style: TextStyle(fontSize: 16.0),
+                  ),
+                  SizedBox(
+                    width: 200,
+                    child: TextFormField(
+                      controller: _weightController,
+                      decoration: _buildInputDecoration('Weight (kg)'),
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.end,
+                      style: const TextStyle(fontSize: 14.0),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20.0),
+              // Sleep
+              const Text(
+                'Sleep',
+                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10.0),
+              // Sleep Time
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Sleep Time',
+                    style: TextStyle(fontSize: 16.0),
+                  ),
+                  SizedBox(
+                    width: 200,
+                    child: InkWell(
+                      onTap: () async {
+                        final selectedTime = await showTimePicker(
+                          context: context,
+                          initialTime: _sleepTime,
+                        );
+                        if (selectedTime != null) {
+                          setState(() {
+                            _sleepTime = selectedTime;
+                          });
+                        }
+                      },
+                      child: InputDecorator(
+                        decoration: _buildInputDecoration('Sleep Time'),
+                        child: Text(
+                          _sleepTime.format(context),
+                          textAlign: TextAlign.end,
+                          style: const TextStyle(fontSize: 14.0),
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(height: 10.0),
-            // Wake Up Time
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Wake Up Time',
-                  style: TextStyle(fontSize: 16.0),
-                ),
-                SizedBox(
-                  width: 200,
-                  child: InkWell(
-                    onTap: () async {
-                      final selectedTime = await showTimePicker(
-                        context: context,
-                        initialTime: _wakeUpTime,
-                      );
-                      if (selectedTime != null) {
-                        setState(() {
-                          _wakeUpTime = selectedTime;
-                        });
-                      }
-                    },
-                    child: InputDecorator(
-                      decoration: _buildInputDecoration('Wake Up Time'),
-                      child: Text(
-                        '${_wakeUpTime.format(context)}',
-                        textAlign: TextAlign.end,
-                        style: TextStyle(fontSize: 14.0),
+                ],
+              ),
+              const SizedBox(height: 10.0),
+              // Wake Up Time
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Wake Up Time',
+                    style: TextStyle(fontSize: 16.0),
+                  ),
+                  SizedBox(
+                    width: 200,
+                    child: InkWell(
+                      onTap: () async {
+                        final selectedTime = await showTimePicker(
+                          context: context,
+                          initialTime: _wakeUpTime,
+                        );
+                        if (selectedTime != null) {
+                          setState(() {
+                            _wakeUpTime = selectedTime;
+                          });
+                        }
+                      },
+                      child: InputDecorator(
+                        decoration: _buildInputDecoration('Wake Up Time'),
+                        child: Text(
+                          _wakeUpTime.format(context),
+                          textAlign: TextAlign.end,
+                          style: const TextStyle(fontSize: 14.0),
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(height: 20.0),
-            // Food
-            Text(
-              'Food',
-              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 10.0),
-            // Calories
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Calories/day',
-                  style: TextStyle(fontSize: 16.0),
-                ),
-                SizedBox(
-                  width: 200,
-                  child: TextFormField(
-                    controller: _caloriesController,
-                    decoration: _buildInputDecoration('Calories/day'),
-                    keyboardType: TextInputType.number,
-                    textAlign: TextAlign.end,
-                    style: TextStyle(fontSize: 14.0),
+                ],
+              ),
+              const SizedBox(height: 20.0),
+              // Food
+              const Text(
+                'Food',
+                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10.0),
+              // Calories
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Calories/day',
+                    style: TextStyle(fontSize: 16.0),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(height: 10.0),
-            // Protein
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Protein/day',
-                  style: TextStyle(fontSize: 16.0),
-                ),
-                SizedBox(
-                  width: 200,
-                  child: TextFormField(
-                    controller: _proteinController,
-                    decoration: _buildInputDecoration('Protein/day'),
-                    keyboardType: TextInputType.number,
-                    textAlign: TextAlign.end,
-                    style: TextStyle(fontSize: 14.0),
+                  SizedBox(
+                    width: 200,
+                    child: TextFormField(
+                      controller: _caloriesController,
+                      decoration: _buildInputDecoration('Calories/day'),
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.end,
+                      style: const TextStyle(fontSize: 14.0),
+                    ),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(height: 10.0),
-            // Carbs
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Carbs/day',
-                  style: TextStyle(fontSize: 16.0),
-                ),
-                SizedBox(
-                  width: 200,
-                  child: TextFormField(
-                    controller: _carbsController,
-                    decoration: _buildInputDecoration('Carbs/day'),
-                    keyboardType: TextInputType.number,
-                    textAlign: TextAlign.end,
-                    style: TextStyle(fontSize: 14.0),
+                ],
+              ),
+              const SizedBox(height: 10.0),
+              // Protein
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Protein/day',
+                    style: TextStyle(fontSize: 16.0),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(height: 10.0),
-            // Fat
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Fat/day',
-                  style: TextStyle(fontSize: 16.0),
-                ),
-                SizedBox(
-                  width: 200,
-                  child: TextFormField(
-                    controller: _fatController,
-                    decoration: _buildInputDecoration('Fat/day'),
-                    keyboardType: TextInputType.number,
-                    textAlign: TextAlign.end,
-                    style: TextStyle(fontSize: 14.0),
+                  SizedBox(
+                    width: 200,
+                    child: TextFormField(
+                      controller: _proteinController,
+                      decoration: _buildInputDecoration('Protein/day'),
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.end,
+                      style: const TextStyle(fontSize: 14.0),
+                    ),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(height: 20.0),
+                ],
+              ),
+              const SizedBox(height: 10.0),
+              // Carbs
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Carbs/day',
+                    style: TextStyle(fontSize: 16.0),
+                  ),
+                  SizedBox(
+                    width: 200,
+                    child: TextFormField(
+                      controller: _carbsController,
+                      decoration: _buildInputDecoration('Carbs/day'),
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.end,
+                      style: const TextStyle(fontSize: 14.0),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10.0),
+              // Fat
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Fat/day',
+                    style: TextStyle(fontSize: 16.0),
+                  ),
+                  SizedBox(
+                    width: 200,
+                    child: TextFormField(
+                      controller: _fatController,
+                      decoration: _buildInputDecoration('Fat/day'),
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.end,
+                      style: const TextStyle(fontSize: 14.0),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20.0),
+              // See My Score button
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    showSuggestions = true;
+                    showInputFields = false;
+                  });
+                },
+                child: const Text('See My Suggestions'),
+              ),
+            ] else if (showSuggestions) ...[
+              // Display suggestions
+              const Text(
+                'BMI Suggestion:',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Text(bmiSuggest),
+              const SizedBox(height: 16.0),
+              const Text(
+                'Sleep Suggestion:',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Text(sleepSuggest),
+              const SizedBox(height: 16.0),
+              const Text(
+                'Calorie Suggestion:',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Text(calorieSuggest),
+              const Text(
+                'Protein Suggestion:',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Text(proteinSuggest),
+              const SizedBox(height: 16.0),
+              const Text(
+                'Carbs Suggestion:',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Text(carbSuggest),
+              const SizedBox(height: 16.0),
+              const Text(
+                'Fat Suggestion:',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Text(fatSuggest),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    showInputFields = true; // Switch back to input fields
+                    showSuggestions = false;
+                  });
+                },
+                child: const Text('Go Back'),
+              ),
+            ],
+
+            const SizedBox(height: 20.0),
             // Calculate Button
-            ElevatedButton(
-              onPressed: _submitForm,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF759873),
+            if (showInputFields) ...[
+              ElevatedButton(
+                onPressed: _submitForm,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF759873),
+                ),
+                child: const Text(
+                  'Calculate',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
-              child: Text(
-                'Calculate',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
+            ],
           ],
         ),
       ),
