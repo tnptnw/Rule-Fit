@@ -45,12 +45,12 @@ model score {
 
 model suggest {
   suggestId          Int         @id @default(autoincrement())
-  BMISuggest         String      @db.VarChar(255)
-  sleepSuggest       String      @db.VarChar(255)
-  calorieSuggest     String      @db.VarChar(255)
-  proteinSuggest     String      @db.VarChar(255)
-  cabohydrateSuggest String      @db.VarChar(255)
-  fatSuggest         String      @db.VarChar(255)
+  BMISuggest         String      @db.Text
+  sleepSuggest       String      @db.Text
+  calorieSuggest     String      @db.Text
+  proteinSuggest     String      @db.Text
+  cabohydrateSuggest String      @db.Text
+  fatSuggest         String      @db.Text
   parameter          parameter[]
 }
 
