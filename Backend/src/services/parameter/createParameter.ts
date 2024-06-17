@@ -58,12 +58,12 @@ class parameterService {
 
     // Extract hours from sleepStart and sleepEnd
     const sleepStart = new Date(reqBody.sleepStart);
-const sleepEnd = new Date(reqBody.sleepEnd);
+    const sleepEnd = new Date(reqBody.sleepEnd);
 
-// Extract the hours
-const sleepStartHour = sleepStart.getHours();
-const sleepEndHour = sleepEnd.getHours();
-    
+    // Extract the hours
+    const sleepStartHour = sleepStart.getHours();
+    const sleepEndHour = sleepEnd.getHours();
+
     console.log("sleepStartHour: ", sleepStartHour);
     console.log("sleepEndHour: ", sleepEndHour);
 
@@ -186,7 +186,8 @@ const sleepEndHour = sleepEnd.getHours();
     const recommendedCarbs = (recommendedCalories * 0.55) / 4; // 55% of calories from carbs
     let carbScore =
       8 -
-      (Math.abs(reqBody.carbohydrate - recommendedCarbs) / recommendedCarbs) * 8;
+      (Math.abs(reqBody.carbohydrate - recommendedCarbs) / recommendedCarbs) *
+        8;
     carbScore = Math.max(0, Math.min(8, carbScore));
     console.log("carbScore: ", carbScore);
 
@@ -245,7 +246,7 @@ const sleepEndHour = sleepEnd.getHours();
     } else if (totalScore >= 35 && totalScore <= 61) {
       scoreName = "Bad";
     } else if (totalScore >= 62 && totalScore <= 78) {
-      scoreName = "Not Good";
+      scoreName = "Moderate";
     } else if (totalScore >= 79 && totalScore <= 89) {
       scoreName = "Good";
     } else if (totalScore >= 90 && totalScore <= 100) {
