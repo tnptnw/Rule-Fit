@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:rule_fit/components/bottom_bar.dart';
+import 'package:rule_fit/pages/profile_page.dart';
 import 'dart:convert';
 
 class HomePage extends StatefulWidget {
@@ -30,6 +32,27 @@ class _HomePageState extends State<HomePage> {
   String proteinSuggest = "";
   String carbSuggest = "";
   String fatSuggest = "";
+  String healthName = "";
+  int _selectedIndex = 1;
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+      if (index == 0) {
+        // Navigator.pushReplacement(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => HistoryPage()),
+        // );
+      } else if (index == 1) {
+        // Stay on the current page
+      } else if (index == 2) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ProfilePage(jwtToken: widget.jwtToken)),
+        );
+      }
+    });
+  }
 
   @override
   void dispose() {
@@ -83,7 +106,7 @@ class _HomePageState extends State<HomePage> {
       if (response.statusCode == 200) {
         // Parse the response body
         final responseData = jsonDecode(response.body);
-        // print(responseData);
+        print(responseData);
         setState(() {
           _healthScore =
               (responseData['data']['score']['totalScore'] as num).toDouble();
@@ -94,6 +117,7 @@ class _HomePageState extends State<HomePage> {
           proteinSuggest = responseData['data']['suggest']['proteinSuggest'];
           carbSuggest = responseData['data']['suggest']['cabohydrateSuggest'];
           fatSuggest = responseData['data']['suggest']['fatSuggest'];
+          healthName = responseData['data']['score']['name'];
           showSuggestions = true; // Add this line to show suggestions
         });
 
@@ -143,6 +167,11 @@ class _HomePageState extends State<HomePage> {
                   '$_healthScore',
                   style: const TextStyle(
                       fontSize: 26.0, fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  healthName,
+                  style: const TextStyle(
+                      fontSize: 20.0, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
@@ -435,6 +464,10 @@ class _HomePageState extends State<HomePage> {
             ],
           ],
         ),
+      ),
+      bottomNavigationBar: BottomNavBar(
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
       ),
     );
   }
