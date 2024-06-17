@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:rule_fit/components/bottom_bar.dart';
+import 'package:rule_fit/pages/profile_page.dart';
 import 'dart:convert';
 
 class HomePage extends StatefulWidget {
@@ -31,6 +33,26 @@ class _HomePageState extends State<HomePage> {
   String carbSuggest = "";
   String fatSuggest = "";
   String healthName = "";
+  int _selectedIndex = 1;
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+      if (index == 0) {
+        // Navigator.pushReplacement(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => HistoryPage()),
+        // );
+      } else if (index == 1) {
+        // Stay on the current page
+      } else if (index == 2) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ProfilePage(jwtToken: widget.jwtToken)),
+        );
+      }
+    });
+  }
 
   @override
   void dispose() {
@@ -442,6 +464,10 @@ class _HomePageState extends State<HomePage> {
             ],
           ],
         ),
+      ),
+      bottomNavigationBar: BottomNavBar(
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
       ),
     );
   }

@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:rule_fit/pages/home.dart';
 
 class ProfilePage extends StatefulWidget {
   final String jwtToken;
@@ -14,10 +15,31 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  int _selectedIndex = 2;
   late Map<String, dynamic> userData;
   bool isLoading = true;
   bool isEditingName = false;
   final TextEditingController _nameController = TextEditingController();
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+      if (index == 0) {
+        // Navigator.pushReplacement(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => HistoryPage()),
+        // );
+      } else if (index == 1) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => HomePage(jwtToken: widget.jwtToken)),
+        );
+      } else if (index == 2) {
+        // Stay on the current page
+      }
+    });
+  }
 
   @override
   void initState() {
