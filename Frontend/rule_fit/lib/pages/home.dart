@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:rule_fit/Token/token_manager.dart';
 import 'package:rule_fit/components/bottom_bar.dart';
 import 'package:rule_fit/pages/profile_page.dart';
 import 'dart:convert';
 
 class HomePage extends StatefulWidget {
-  final String jwtToken;
-
-  const HomePage({super.key, required this.jwtToken});
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -24,7 +22,7 @@ class _HomePageState extends State<HomePage> {
   double _healthScore = 0.0;
   bool showInputFields = true;
   bool suggestionsExpanded = false;
-  bool showSuggestions = false; // Add this line to your state
+  bool showSuggestions = false;
   List<Map<String, String>> suggestions = [];
   String bmiSuggest = "";
   String sleepSuggest = "";
@@ -34,23 +32,18 @@ class _HomePageState extends State<HomePage> {
   String fatSuggest = "";
   String healthName = "";
   int _selectedIndex = 1;
-  void _onItemTapped(int index) {
+  String? _token;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadToken();
+  }
+
+  Future<void> _loadToken() async {
+    String? token = await TokenManager().getToken();
     setState(() {
-      _selectedIndex = index;
-      if (index == 0) {
-        // Navigator.pushReplacement(
-        //   context,
-        //   MaterialPageRoute(builder: (context) => HistoryPage()),
-        // );
-      } else if (index == 1) {
-        // Stay on the current page
-      } else if (index == 2) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => ProfilePage(jwtToken: widget.jwtToken)),
-        );
-      }
+      _token = token;
     });
   }
 
@@ -65,7 +58,6 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
-  // Function to convert TimeOfDay to DateTime
   DateTime convertToDateTime(TimeOfDay timeOfDay) {
     final now = DateTime.now();
     return DateTime(
@@ -73,13 +65,19 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _submitForm() async {
-    // Convert TimeOfDay to String
+    if (_token == null) {
+      // Handle token not being available
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: Token not available')),
+      );
+      return;
+    }
+
     final sleepTime = convertToDateTime(_sleepTime);
     final wakeUpTime = convertToDateTime(_wakeUpTime);
 
-    // Collect the form data
     final formData = {
-      'token': widget.jwtToken,
+      'token': _token,
       'height': _heightController.text,
       'weight': _weightController.text,
       'sleepStart': sleepTime.toUtc().toIso8601String(),
@@ -90,21 +88,19 @@ class _HomePageState extends State<HomePage> {
       'fat': int.parse(_fatController.text),
     };
 
-    // Define the endpoint URL of your backend
     final url = Uri.parse('http://localhost:4000/parameter/create');
 
-    // Send the POST request
     try {
       final response = await http.post(
         url,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ${widget.jwtToken}',
+          'Authorization': 'Bearer $_token',
         },
         body: jsonEncode(formData),
       );
+
       if (response.statusCode == 200) {
-        // Parse the response body
         final responseData = jsonDecode(response.body);
         print(responseData);
         setState(() {
@@ -118,12 +114,9 @@ class _HomePageState extends State<HomePage> {
           carbSuggest = responseData['data']['suggest']['cabohydrateSuggest'];
           fatSuggest = responseData['data']['suggest']['fatSuggest'];
           healthName = responseData['data']['score']['name'];
-          showSuggestions = true; // Add this line to show suggestions
+          showSuggestions = true;
         });
-
-        // await _fetchHealthScore();
       } else {
-        // Handle errors
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error: ${response.body}')),
         );
@@ -465,10 +458,10 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-      ),
+      // bottomNavigationBar: BottomNavBar(
+      //   currentIndex: _selectedIndex,
+      //   onTap: _onItemTapped,
+      // ),
     );
   }
 }
