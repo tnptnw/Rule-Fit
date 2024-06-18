@@ -40,7 +40,12 @@ class MyApp extends StatelessWidget {
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
             useMaterial3: true,
             scaffoldBackgroundColor: const Color(0xFFFFF7F1)),
-        home: LogInPage());
+        home: LogInPage()
+        // ProfilePage(
+        //   jwtToken:
+        //       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImlhdCI6MTcxODYyNTIzMH0.mwNrMYMuEabW-ysHnf8-K3z8rtz-HeONT1yqvTvkB_E",
+        // )
+        );
   }
 }
 
