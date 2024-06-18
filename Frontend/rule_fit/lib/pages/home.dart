@@ -195,7 +195,7 @@ class _HomePageState extends State<HomePage> {
                     width: 200,
                     child: TextFormField(
                       controller: _heightController,
-                      decoration: _buildInputDecoration('Height (cm)'),
+                      decoration: _buildInputDecoration(''),
                       keyboardType: TextInputType.number,
                       textAlign: TextAlign.end,
                       style: const TextStyle(fontSize: 14.0),
@@ -216,7 +216,7 @@ class _HomePageState extends State<HomePage> {
                     width: 200,
                     child: TextFormField(
                       controller: _weightController,
-                      decoration: _buildInputDecoration('Weight (kg)'),
+                      decoration: _buildInputDecoration(''),
                       keyboardType: TextInputType.number,
                       textAlign: TextAlign.end,
                       style: const TextStyle(fontSize: 14.0),
@@ -254,7 +254,7 @@ class _HomePageState extends State<HomePage> {
                         }
                       },
                       child: InputDecorator(
-                        decoration: _buildInputDecoration('Sleep Time'),
+                        decoration: _buildInputDecoration(''),
                         child: Text(
                           _sleepTime.format(context),
                           textAlign: TextAlign.end,
@@ -289,7 +289,7 @@ class _HomePageState extends State<HomePage> {
                         }
                       },
                       child: InputDecorator(
-                        decoration: _buildInputDecoration('Wake Up Time'),
+                        decoration: _buildInputDecoration(''),
                         child: Text(
                           _wakeUpTime.format(context),
                           textAlign: TextAlign.end,
@@ -319,7 +319,7 @@ class _HomePageState extends State<HomePage> {
                     width: 200,
                     child: TextFormField(
                       controller: _caloriesController,
-                      decoration: _buildInputDecoration('Calories/day'),
+                      decoration: _buildInputDecoration(''),
                       keyboardType: TextInputType.number,
                       textAlign: TextAlign.end,
                       style: const TextStyle(fontSize: 14.0),
@@ -340,7 +340,7 @@ class _HomePageState extends State<HomePage> {
                     width: 200,
                     child: TextFormField(
                       controller: _proteinController,
-                      decoration: _buildInputDecoration('Protein/day'),
+                      decoration: _buildInputDecoration(''),
                       keyboardType: TextInputType.number,
                       textAlign: TextAlign.end,
                       style: const TextStyle(fontSize: 14.0),
@@ -361,7 +361,7 @@ class _HomePageState extends State<HomePage> {
                     width: 200,
                     child: TextFormField(
                       controller: _carbsController,
-                      decoration: _buildInputDecoration('Carbs/day'),
+                      decoration: _buildInputDecoration(''),
                       keyboardType: TextInputType.number,
                       textAlign: TextAlign.end,
                       style: const TextStyle(fontSize: 14.0),
@@ -382,7 +382,7 @@ class _HomePageState extends State<HomePage> {
                     width: 200,
                     child: TextFormField(
                       controller: _fatController,
-                      decoration: _buildInputDecoration('Fat/day'),
+                      decoration: _buildInputDecoration(''),
                       keyboardType: TextInputType.number,
                       textAlign: TextAlign.end,
                       style: const TextStyle(fontSize: 14.0),
@@ -399,7 +399,11 @@ class _HomePageState extends State<HomePage> {
                     showInputFields = false;
                   });
                 },
-                child: const Text('See My Suggestions'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFEDC4A6).withOpacity(0.75),
+                ),
+                child: const Text('See My Suggestions',
+                    style: TextStyle(color: Colors.white),),
               ),
             ] else if (showSuggestions) ...[
               // Display suggestions
