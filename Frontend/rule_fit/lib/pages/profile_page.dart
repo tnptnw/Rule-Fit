@@ -3,48 +3,38 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-import 'package:rule_fit/pages/home.dart';
+import 'package:rule_fit/Token/token_manager.dart';
 
 class ProfilePage extends StatefulWidget {
-  final String jwtToken;
-
-  ProfilePage({required this.jwtToken});
-
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  int _selectedIndex = 2;
   late Map<String, dynamic> userData;
   bool isLoading = true;
   bool isEditingName = false;
   final TextEditingController _nameController = TextEditingController();
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-      if (index == 0) {
-        // Navigator.pushReplacement(
-        //   context,
-        //   MaterialPageRoute(builder: (context) => HistoryPage()),
-        // );
-      } else if (index == 1) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => HomePage(jwtToken: widget.jwtToken)),
-        );
-      } else if (index == 2) {
-        // Stay on the current page
-      }
-    });
-  }
+  String? _token;
 
   @override
   void initState() {
     super.initState();
-    _fetchProfileData();
+    _loadToken();
+  }
+
+  Future<void> _loadToken() async {
+    String? token = await TokenManager().getToken();
+    setState(() {
+      _token = token;
+    });
+    if (_token != null) {
+      _fetchProfileData();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: Token not available')),
+      );
+    }
   }
 
   Future<void> _fetchProfileData() async {
@@ -55,7 +45,7 @@ class _ProfilePageState extends State<ProfilePage> {
         url,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ${widget.jwtToken}',
+          'Authorization': 'Bearer $_token',
         },
       );
 
@@ -66,7 +56,6 @@ class _ProfilePageState extends State<ProfilePage> {
           isLoading = false;
         });
       } else {
-        // Handle error
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error: ${response.body}')),
         );
@@ -83,7 +72,7 @@ class _ProfilePageState extends State<ProfilePage> {
     if (image != null) {
       final url = Uri.parse('http://localhost:4000/user/profile/picture');
       final request = http.MultipartRequest('POST', url);
-      request.headers['Authorization'] = 'Bearer ${widget.jwtToken}';
+      request.headers['Authorization'] = 'Bearer $_token';
       request.files
           .add(await http.MultipartFile.fromPath('picture', image.path));
 
@@ -114,7 +103,7 @@ class _ProfilePageState extends State<ProfilePage> {
         url,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ${widget.jwtToken}',
+          'Authorization': 'Bearer $_token',
         },
         body: jsonEncode(updatedData),
       );
