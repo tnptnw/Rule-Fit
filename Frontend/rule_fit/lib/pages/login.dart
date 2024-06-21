@@ -79,7 +79,8 @@ class _LogInPageState extends State<LogInPage> {
       ),
       filled: true,
       fillColor: Colors.white,
-      contentPadding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+      contentPadding:
+          const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
     );
   }
 
@@ -94,6 +95,12 @@ class _LogInPageState extends State<LogInPage> {
             child: ListView(
               shrinkWrap: true,
               children: <Widget>[
+                Image(
+                  image: const AssetImage('assets/images/logo3.png'),
+                  width: MediaQuery.of(context).size.width * 0.2,
+                  height: MediaQuery.of(context).size.height * 0.2,
+                ),
+                const SizedBox(height: 30),
                 const Center(
                   child: Text(
                     'Log In',
@@ -160,7 +167,9 @@ class _LogInPageState extends State<LogInPage> {
                       ),
                     ),
                   ),
+                  
                 ),
+                const SizedBox(height: 50),
               ],
             ),
           ),
