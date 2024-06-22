@@ -9,6 +9,9 @@ class historyService {
         const get = prisma.parameter.findMany({
           where: {
             userId: userId
+          },
+          include: {
+            score: true
           }
         });
         return get;
