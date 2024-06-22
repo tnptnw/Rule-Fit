@@ -92,6 +92,7 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+
   Future<void> _pickAndUploadImage() async {
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
@@ -103,7 +104,9 @@ class _ProfilePageState extends State<ProfilePage> {
       request.files
           .add(await http.MultipartFile.fromPath('picture', image.path));
 
-      final response = await request.send();
+
+  //     final response = await request.send();
+
 
       if (response.statusCode == 200) {
         final responseData = await response.stream.bytesToString();
@@ -126,15 +129,17 @@ class _ProfilePageState extends State<ProfilePage> {
       'username': _nameController.text,
     };
 
-    try {
-      final response = await http.post(
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $_token',
-        },
-        body: jsonEncode(updatedData),
-      );
+
+  //   try {
+  //     final response = await http.post(
+  //       url,
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': 'Bearer $_token',
+  //       },
+  //       body: jsonEncode(updatedData),
+  //     );
+
 
       if (response.statusCode == 200) {
         setState(() {
@@ -152,6 +157,7 @@ class _ProfilePageState extends State<ProfilePage> {
       print(e);
     }
   }
+
 
   void _showEditUsernameDialog() {
     showDialog(
@@ -288,6 +294,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     // Add more fields as necessary
                   ],
                 ),
+
               ),
             ),
       bottomNavigationBar: BottomNavBar(

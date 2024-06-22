@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:rule_fit/Token/token_manager.dart';
 import 'dart:convert';
 import 'package:intl/intl.dart';
+
 import 'package:rule_fit/components/bottom_bar.dart';
 import 'package:rule_fit/pages/home.dart';
 import 'package:rule_fit/pages/profile_page.dart';
@@ -14,10 +15,12 @@ class HistoryPage extends StatefulWidget {
   _HistoryPageState createState() => _HistoryPageState();
 }
 
+
 class _HistoryPageState extends State<HistoryPage> {
   List<Map<String, dynamic>> historyData = [];
   bool isLoading = true;
   String? _token;
+
   int _selectedIndex = 0;
 
   void _onItemTapped(int index) {
@@ -39,6 +42,7 @@ class _HistoryPageState extends State<HistoryPage> {
     });
   }
 
+
   @override
   void initState() {
     super.initState();
@@ -49,7 +53,9 @@ class _HistoryPageState extends State<HistoryPage> {
     String? token = await TokenManager().getToken();
     if (token == null) {
       ScaffoldMessenger.of(context).showSnackBar(
+
         const SnackBar(content: Text('Error: Token not available')),
+
       );
     } else {
       setState(() {
@@ -62,7 +68,9 @@ class _HistoryPageState extends State<HistoryPage> {
   Future<void> _fetchHistoryData() async {
     if (_token == null) {
       ScaffoldMessenger.of(context).showSnackBar(
+
         const SnackBar(content: Text('Error: Token is null')),
+
       );
       return;
     }
@@ -92,7 +100,9 @@ class _HistoryPageState extends State<HistoryPage> {
     } catch (e) {
       print(e);
       ScaffoldMessenger.of(context).showSnackBar(
+
         const SnackBar(content: Text('Error fetching history data')),
+
       );
     }
   }
@@ -121,6 +131,7 @@ class _HistoryPageState extends State<HistoryPage> {
                 ],
               ),
             ),
+
       bottomNavigationBar: BottomNavBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
@@ -133,6 +144,7 @@ class _HistoryPageState extends State<HistoryPage> {
     final sleepEnd = DateTime.parse(data['sleepEnd']);
     final sleepHours = sleepEnd.difference(sleepStart).inHours;
     final date = DateFormat('dd-MM-yyyy').format(DateTime.parse(data['date']));
+
 
     String score = '';
     if (data['score'] != null && data['score']['totalScore'] != null) {
@@ -161,6 +173,7 @@ class _HistoryPageState extends State<HistoryPage> {
               offset: const Offset(0, 3), // Offset in the x and y direction
             ),
           ],
+
         ),
         child: Row(
           children: [

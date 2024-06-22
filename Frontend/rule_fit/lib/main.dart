@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:rule_fit/pages/history.dart';
+
 import 'package:rule_fit/pages/home.dart';
+
 import 'package:rule_fit/pages/login.dart';
 import 'package:rule_fit/auth/auth_provider.dart';
 import 'package:provider/provider.dart';
@@ -22,6 +24,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+
       title: 'Flutter Demo',
       theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
@@ -35,6 +38,7 @@ class MyApp extends StatelessWidget {
         '/history': (context) => const HistoryPage(),
       },
     );
+
   }
 }
 
