@@ -4,15 +4,44 @@ import 'package:rule_fit/Token/token_manager.dart';
 import 'dart:convert';
 import 'package:intl/intl.dart';
 
+import 'package:rule_fit/components/bottom_bar.dart';
+import 'package:rule_fit/pages/home.dart';
+import 'package:rule_fit/pages/profile_page.dart';
+
 class HistoryPage extends StatefulWidget {
+  const HistoryPage({super.key});
+
   @override
   _HistoryPageState createState() => _HistoryPageState();
 }
+
 
 class _HistoryPageState extends State<HistoryPage> {
   List<Map<String, dynamic>> historyData = [];
   bool isLoading = true;
   String? _token;
+
+  int _selectedIndex = 0;
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+      if (index == 0) {
+        // Stay on the current page
+      } else if (index == 1) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomePage()),
+        );
+      } else if (index == 2) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const ProfilePage()),
+        );
+      }
+    });
+  }
+
 
   @override
   void initState() {
@@ -24,7 +53,9 @@ class _HistoryPageState extends State<HistoryPage> {
     String? token = await TokenManager().getToken();
     if (token == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: Token not available')),
+
+        const SnackBar(content: Text('Error: Token not available')),
+
       );
     } else {
       setState(() {
@@ -37,7 +68,9 @@ class _HistoryPageState extends State<HistoryPage> {
   Future<void> _fetchHistoryData() async {
     if (_token == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: Token is null')),
+
+        const SnackBar(content: Text('Error: Token is null')),
+
       );
       return;
     }
@@ -67,7 +100,9 @@ class _HistoryPageState extends State<HistoryPage> {
     } catch (e) {
       print(e);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error fetching history data')),
+
+        const SnackBar(content: Text('Error fetching history data')),
+
       );
     }
   }
@@ -76,7 +111,7 @@ class _HistoryPageState extends State<HistoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -96,6 +131,11 @@ class _HistoryPageState extends State<HistoryPage> {
                 ],
               ),
             ),
+
+      bottomNavigationBar: BottomNavBar(
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+      ),
     );
   }
 
@@ -105,6 +145,18 @@ class _HistoryPageState extends State<HistoryPage> {
     final sleepHours = sleepEnd.difference(sleepStart).inHours;
     final date = DateFormat('dd-MM-yyyy').format(DateTime.parse(data['date']));
 
+
+    String score = '';
+    if (data['score'] != null && data['score']['totalScore'] != null) {
+      score = data['score']['totalScore'].toString();
+      if (score.contains('.')) {
+        score = score.split('.')[0]; // Take only the integer part
+      }
+      if (score.length > 2) {
+        score = score.substring(0, 2); // Take the first two digits
+      }
+    }
+
     return Center(
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 8.0),
@@ -113,6 +165,15 @@ class _HistoryPageState extends State<HistoryPage> {
         decoration: BoxDecoration(
           color: const Color(0xFFEDC4A6).withOpacity(0.25),
           borderRadius: BorderRadius.circular(30),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2), // Shadow color
+              spreadRadius: 2, // Spread radius
+              blurRadius: 1, // Blur radius
+              offset: const Offset(0, 3), // Offset in the x and y direction
+            ),
+          ],
+
         ),
         child: Row(
           children: [
@@ -134,7 +195,7 @@ class _HistoryPageState extends State<HistoryPage> {
                       ),
                     ),
                     Text(
-                      '${data['scoreId'] ?? ''}',
+                      score,
                       style: const TextStyle(
                         color: Colors.black,
                         fontSize: 50,

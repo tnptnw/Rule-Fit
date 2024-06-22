@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:rule_fit/Token/token_manager.dart';
 import 'package:rule_fit/components/bottom_bar.dart';
+import 'package:rule_fit/pages/history.dart';
 import 'package:rule_fit/pages/profile_page.dart';
+
 import 'dart:convert';
 
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -33,6 +37,25 @@ class _HomePageState extends State<HomePage> {
   String healthName = "";
   int _selectedIndex = 1;
   String? _token;
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+      if (index == 0) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HistoryPage()),
+        );
+      } else if (index == 1) {
+        // Stay on the current page
+      } else if (index == 2) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const ProfilePage()),
+        );
+      }
+    });
+  }
 
   @override
   void initState() {
@@ -68,7 +91,7 @@ class _HomePageState extends State<HomePage> {
     if (_token == null) {
       // Handle token not being available
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: Token not available')),
+        const SnackBar(content: Text('Error: Token not available')),
       );
       return;
     }
@@ -394,8 +417,10 @@ class _HomePageState extends State<HomePage> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFEDC4A6).withOpacity(0.75),
                 ),
-                child: const Text('See My Suggestions',
-                    style: TextStyle(color: Colors.white),),
+                child: const Text(
+                  'See My Suggestions',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ] else if (showSuggestions) ...[
               // Display suggestions
@@ -461,10 +486,10 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      // bottomNavigationBar: BottomNavBar(
-      //   currentIndex: _selectedIndex,
-      //   onTap: _onItemTapped,
-      // ),
+      bottomNavigationBar: BottomNavBar(
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+      ),
     );
   }
 }
