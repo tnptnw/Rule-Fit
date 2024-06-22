@@ -102,7 +102,6 @@ class _HomePageState extends State<HomePage> {
 
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
-        print(responseData);
         setState(() {
           _healthScore =
               (responseData['data']['score']['totalScore'] as num).toDouble();
