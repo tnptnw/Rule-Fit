@@ -92,6 +92,12 @@ class _SignUpPageState extends State<SignUpPage> {
             child: ListView(
               shrinkWrap: true,
               children: <Widget>[
+                Image(
+                  image: const AssetImage('assets/images/logo3.png'),
+                  width: MediaQuery.of(context).size.width * 0.2,
+                  height: MediaQuery.of(context).size.height * 0.2,
+                ),
+                const SizedBox(height: 20),
                 const Center(
                   child: Text(
                     'Sign Up',
