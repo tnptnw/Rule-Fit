@@ -54,7 +54,6 @@ class _LogInPageState extends State<LogInPage> {
           });
 
           await TokenManager().saveToken(_jwtToken);
-          print(_jwtToken);
 
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => HomePage()));

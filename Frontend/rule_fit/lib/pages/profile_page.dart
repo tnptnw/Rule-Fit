@@ -28,75 +28,20 @@ class _ProfilePageState extends State<ProfilePage> {
     setState(() {
       _token = token;
     });
+
     if (_token != null) {
       _fetchProfileData();
+      print(_token);
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: Token not available')),
-      );
+      print("token not available");
     }
   }
 
   Future<void> _fetchProfileData() async {
-    final url = Uri.parse('http://localhost:4000/user/profile');
-
-    try {
-      final response = await http.get(
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $_token',
-        },
-      );
-
-      if (response.statusCode == 200) {
-        setState(() {
-          userData = jsonDecode(response.body)['data'];
-          _nameController.text = userData['name'];
-          isLoading = false;
-        });
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: ${response.body}')),
-        );
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  Future<void> _pickAndUploadImage() async {
-    final ImagePicker _picker = ImagePicker();
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-
-    if (image != null) {
-      final url = Uri.parse('http://localhost:4000/user/profile/picture');
-      final request = http.MultipartRequest('POST', url);
-      request.headers['Authorization'] = 'Bearer $_token';
-      request.files
-          .add(await http.MultipartFile.fromPath('picture', image.path));
-
-      final response = await request.send();
-
-      if (response.statusCode == 200) {
-        final responseData = await response.stream.bytesToString();
-        setState(() {
-          userData['profilePicture'] =
-              jsonDecode(responseData)['profilePicture'];
-        });
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to upload image')),
-        );
-      }
-    }
-  }
-
-  Future<void> _updateUsername() async {
-    final url = Uri.parse('http://localhost:4000/user/profile/update');
-    final updatedData = {
-      'name': _nameController.text,
+    final formData = {
+      'token': _token,
     };
+    final url = Uri.parse('http://localhost:4000/user/getUsername');
 
     try {
       final response = await http.post(
@@ -105,26 +50,85 @@ class _ProfilePageState extends State<ProfilePage> {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $_token',
         },
-        body: jsonEncode(updatedData),
+        body: jsonEncode(formData),
       );
 
       if (response.statusCode == 200) {
         setState(() {
-          userData['name'] = _nameController.text;
-          isEditingName = false;
+          userData = jsonDecode(response.body)['data'];
+          _nameController.text = userData['username'];
+          isLoading = false;
+          print(response.body);
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Profile updated successfully')),
-        );
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: ${response.body}')),
-        );
+        print(response.body);
+        // print(formData);
       }
     } catch (e) {
       print(e);
     }
   }
+
+  // Future<void> _pickAndUploadImage() async {
+  //   final ImagePicker _picker = ImagePicker();
+  //   final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+
+  //   if (image != null) {
+  //     final url = Uri.parse('http://localhost:4000/user/profile/picture');
+  //     final request = http.MultipartRequest('POST', url);
+  //     request.headers['Authorization'] = 'Bearer $_token';
+  //     request.files
+  //         .add(await http.MultipartFile.fromPath('picture', image.path));
+
+  //     final response = await request.send();
+
+  //     if (response.statusCode == 200) {
+  //       final responseData = await response.stream.bytesToString();
+  //       setState(() {
+  //         userData['profilePicture'] =
+  //             jsonDecode(responseData)['profilePicture'];
+  //       });
+  //     } else {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(content: Text('Failed to upload image')),
+  //       );
+  //     }
+  //   }
+  // }
+
+  // Future<void> _updateUsername() async {
+  //   final url = Uri.parse('http://localhost:4000/user/profile/update');
+  //   final updatedData = {
+  //     'name': _nameController.text,
+  //   };
+
+  //   try {
+  //     final response = await http.post(
+  //       url,
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': 'Bearer $_token',
+  //       },
+  //       body: jsonEncode(updatedData),
+  //     );
+
+  //     if (response.statusCode == 200) {
+  //       setState(() {
+  //         userData['name'] = _nameController.text;
+  //         isEditingName = false;
+  //       });
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(content: Text('Profile updated successfully')),
+  //       );
+  //     } else {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(content: Text('Error: ${response.body}')),
+  //       );
+  //     }
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -140,7 +144,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   GestureDetector(
-                    onTap: _pickAndUploadImage,
+                    // onTap: _pickAndUploadImage,
                     child: CircleAvatar(
                       radius: 50,
                       backgroundImage: userData['profilePicture'] != null
@@ -158,7 +162,9 @@ class _ProfilePageState extends State<ProfilePage> {
                             labelText: 'Name',
                             suffixIcon: IconButton(
                               icon: Icon(Icons.check),
-                              onPressed: _updateUsername,
+                              onPressed: () {
+                                // _updateUsername();
+                              },
                             ),
                           ),
                         )
@@ -169,16 +175,16 @@ class _ProfilePageState extends State<ProfilePage> {
                             });
                           },
                           child: Text(
-                            'Name: ${userData['name']}',
-                            style: TextStyle(fontSize: 18.0),
+                            'Name: ${userData['username']}',
+                            style: const TextStyle(fontSize: 18.0),
                           ),
                         ),
                   SizedBox(height: 10.0),
-                  Text(
-                    'Email: ${userData['email']}',
-                    style: TextStyle(fontSize: 18.0),
-                  ),
-                  SizedBox(height: 10.0),
+                  // Text(
+                  //   'Email: ${userData['email']}',
+                  //   style: TextStyle(fontSize: 18.0),
+                  // ),
+                  // SizedBox(height: 10.0),
                   // Add more fields as necessary
                 ],
               ),
