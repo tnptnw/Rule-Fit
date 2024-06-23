@@ -458,6 +458,7 @@ class _HomePageState extends State<HomePage> {
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               Text(fatSuggest),
+              const SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: () {
                   setState(() {

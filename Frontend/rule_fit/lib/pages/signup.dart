@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:rule_fit/pages/login.dart';
+
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
 
@@ -136,7 +138,21 @@ class _SignUpPageState extends State<SignUpPage> {
                 const SizedBox(height: 15),
                 DropdownButtonFormField<String>(
                   value: _selectedGender,
-                  decoration: _buildInputDecoration('Gender'),
+                  decoration: _buildInputDecoration('Gender').copyWith(
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(25.0),
+                      // borderSide: BorderSide.none,
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+                  ),
+                  icon: const Icon(Icons.arrow_drop_down, color: Color(0xFF759873)),
+                  style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 16.0,
+                  ),
+                  dropdownColor: Colors.white,
                   items: _genders.map((gender) {
                     return DropdownMenuItem<String>(
                       value: gender,
@@ -196,9 +212,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 const SizedBox(height: 10),
                 GestureDetector(
                   onTap: () {
-                    // Add your navigation or any other action here
-                    print(
-                        'Already have an account?'); // Example action: print a message
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => LogInPage()));
                   },
                   child: const Center(
                     child: Text(
@@ -207,9 +221,9 @@ class _SignUpPageState extends State<SignUpPage> {
                         fontSize: 16.0,
                         fontWeight: FontWeight.normal,
                         color: Colors
-                            .blue, // Change color to indicate it's clickable
+                            .blue, 
                         decoration: TextDecoration
-                            .underline, // Add underline for better indication
+                            .underline, 
                       ),
                     ),
                   ),
