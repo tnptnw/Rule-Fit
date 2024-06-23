@@ -318,9 +318,20 @@ class _ProfilePageState extends State<ProfilePage> {
                     const SizedBox(height: 30.0),
                     GestureDetector(
                       onTap: _showEditUsernameDialog,
-                      child: Text(
-                        userData['username'] ?? '',
-                        style: const TextStyle(fontSize: 25.0),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            userData['username'] ?? '',
+                            style: const TextStyle(fontSize: 25.0),
+                          ),
+                          const SizedBox(width: 4.0),
+                          const Icon(
+                            Icons.edit,
+                            size: 20.0,
+                            color: Colors.grey,
+                          ),
+                        ],
                       ),
                     ),
                     const SizedBox(height: 20.0),
