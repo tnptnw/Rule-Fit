@@ -37,6 +37,7 @@ class _HomePageState extends State<HomePage> {
   String healthName = "";
   int _selectedIndex = 1;
   String? _token;
+  String errorMessage = "";
 
   void _onItemTapped(int index) {
     setState(() {
@@ -87,12 +88,34 @@ class _HomePageState extends State<HomePage> {
         now.year, now.month, now.day, timeOfDay.hour, timeOfDay.minute);
   }
 
+  bool _validateFields() {
+    if (_heightController.text.isEmpty ||
+        _weightController.text.isEmpty ||
+        _caloriesController.text.isEmpty ||
+        _proteinController.text.isEmpty ||
+        _carbsController.text.isEmpty ||
+        _fatController.text.isEmpty) {
+      setState(() {
+        errorMessage = 'Please fill in all fields';
+      });
+      return false;
+    }
+    setState(() {
+      errorMessage = ''; // Clear the error message if all fields are filled
+    });
+    return true;
+  }
+
   Future<void> _submitForm() async {
     if (_token == null) {
       // Handle token not being available
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Error: Token not available')),
       );
+      return;
+    }
+
+    if (!_validateFields()) {
       return;
     }
 
@@ -214,6 +237,9 @@ class _HomePageState extends State<HomePage> {
                       keyboardType: TextInputType.number,
                       textAlign: TextAlign.end,
                       style: const TextStyle(fontSize: 14.0),
+                      onChanged: (value) {
+                        _validateFields();
+                      },
                     ),
                   ),
                 ],
@@ -235,6 +261,9 @@ class _HomePageState extends State<HomePage> {
                       keyboardType: TextInputType.number,
                       textAlign: TextAlign.end,
                       style: const TextStyle(fontSize: 14.0),
+                      onChanged: (value) {
+                        _validateFields();
+                      },
                     ),
                   ),
                 ],
@@ -267,6 +296,7 @@ class _HomePageState extends State<HomePage> {
                             _sleepTime = selectedTime;
                           });
                         }
+                        _validateFields();
                       },
                       child: InputDecorator(
                         decoration: _buildInputDecoration(''),
@@ -302,6 +332,7 @@ class _HomePageState extends State<HomePage> {
                             _wakeUpTime = selectedTime;
                           });
                         }
+                        _validateFields();
                       },
                       child: InputDecorator(
                         decoration: _buildInputDecoration(''),
@@ -338,6 +369,9 @@ class _HomePageState extends State<HomePage> {
                       keyboardType: TextInputType.number,
                       textAlign: TextAlign.end,
                       style: const TextStyle(fontSize: 14.0),
+                      onChanged: (value) {
+                        _validateFields();
+                      },
                     ),
                   ),
                 ],
@@ -359,6 +393,9 @@ class _HomePageState extends State<HomePage> {
                       keyboardType: TextInputType.number,
                       textAlign: TextAlign.end,
                       style: const TextStyle(fontSize: 14.0),
+                      onChanged: (value) {
+                        _validateFields();
+                      },
                     ),
                   ),
                 ],
@@ -380,6 +417,9 @@ class _HomePageState extends State<HomePage> {
                       keyboardType: TextInputType.number,
                       textAlign: TextAlign.end,
                       style: const TextStyle(fontSize: 14.0),
+                      onChanged: (value) {
+                        _validateFields();
+                      },
                     ),
                   ),
                 ],
@@ -401,19 +441,26 @@ class _HomePageState extends State<HomePage> {
                       keyboardType: TextInputType.number,
                       textAlign: TextAlign.end,
                       style: const TextStyle(fontSize: 14.0),
+                      onChanged: (value) {
+                        _validateFields();
+                      },
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 20.0),
-              // See My Score button
+              if(errorMessage.isNotEmpty)
+                Text(
+                  errorMessage,
+                  style: const TextStyle(color: Colors.red),
+                ),
               ElevatedButton(
-                onPressed: () {
+                onPressed: _validateFields() ? () {
                   setState(() {
                     showSuggestions = true;
                     showInputFields = false;
                   });
-                },
+                } : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFEDC4A6).withOpacity(0.75),
                 ),
