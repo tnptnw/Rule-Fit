@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:rule_fit/Token/token_manager.dart';
 import 'dart:convert';
-import 'package:rule_fit/pages/home.dart';
 
 class LogInPage extends StatefulWidget {
   const LogInPage({super.key});
@@ -54,10 +53,8 @@ class _LogInPageState extends State<LogInPage> {
           });
 
           await TokenManager().saveToken(_jwtToken);
-          print(_jwtToken);
 
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => HomePage()));
+          Navigator.pushReplacementNamed(context, '/home');
           // Navigator.pushReplacementNamed(context, '/home');
         } else {
           // Handle errors
@@ -169,7 +166,6 @@ class _LogInPageState extends State<LogInPage> {
                       ),
                     ),
                   ),
-                  
                 ),
                 const SizedBox(height: 50),
               ],
