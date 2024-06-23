@@ -157,7 +157,7 @@ class _HomePageState extends State<HomePage> {
       filled: true,
       fillColor: Colors.white,
       contentPadding:
-          const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+          const EdgeInsets.symmetric(vertical: 1.0, horizontal: 20.0),
     );
   }
 
@@ -175,8 +175,10 @@ class _HomePageState extends State<HomePage> {
               children: [
                 const Text(
                   'Health Score',
-                  style:
-                      TextStyle(fontSize: 20.0, fontWeight: FontWeight.normal),
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.normal,
+                  ),
                 ),
                 Text(
                   '$_healthScore',
@@ -203,11 +205,11 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    'Height (cm)',
+                    '     Height (cm)',
                     style: TextStyle(fontSize: 16.0),
                   ),
                   SizedBox(
-                    width: 200,
+                    width: 130,
                     child: TextFormField(
                       controller: _heightController,
                       decoration: _buildInputDecoration(''),
@@ -224,11 +226,11 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    'Weight (kg)',
+                    '     Weight (kg)',
                     style: TextStyle(fontSize: 16.0),
                   ),
                   SizedBox(
-                    width: 200,
+                    width: 130,
                     child: TextFormField(
                       controller: _weightController,
                       decoration: _buildInputDecoration(''),
@@ -251,11 +253,11 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    'Sleep Time',
+                    '     Sleep Start',
                     style: TextStyle(fontSize: 16.0),
                   ),
                   SizedBox(
-                    width: 200,
+                    width: 130,
                     child: InkWell(
                       onTap: () async {
                         final selectedTime = await showTimePicker(
@@ -286,11 +288,11 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    'Wake Up Time',
+                    '     Sleep End',
                     style: TextStyle(fontSize: 16.0),
                   ),
                   SizedBox(
-                    width: 200,
+                    width: 130,
                     child: InkWell(
                       onTap: () async {
                         final selectedTime = await showTimePicker(
@@ -327,11 +329,11 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    'Calories/day',
+                    '     Calories/day',
                     style: TextStyle(fontSize: 16.0),
                   ),
                   SizedBox(
-                    width: 200,
+                    width: 130,
                     child: TextFormField(
                       controller: _caloriesController,
                       decoration: _buildInputDecoration(''),
@@ -348,11 +350,11 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    'Protein/day',
+                    '     Protein/day',
                     style: TextStyle(fontSize: 16.0),
                   ),
                   SizedBox(
-                    width: 200,
+                    width: 130,
                     child: TextFormField(
                       controller: _proteinController,
                       decoration: _buildInputDecoration(''),
@@ -369,11 +371,11 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    'Carbs/day',
+                    '     Carbs/day',
                     style: TextStyle(fontSize: 16.0),
                   ),
                   SizedBox(
-                    width: 200,
+                    width: 130,
                     child: TextFormField(
                       controller: _carbsController,
                       decoration: _buildInputDecoration(''),
@@ -390,11 +392,11 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    'Fat/day',
+                    '     Fat/day',
                     style: TextStyle(fontSize: 16.0),
                   ),
                   SizedBox(
-                    width: 200,
+                    width: 130,
                     child: TextFormField(
                       controller: _fatController,
                       decoration: _buildInputDecoration(''),
@@ -437,12 +439,13 @@ class _HomePageState extends State<HomePage> {
               Text(sleepSuggest),
               const SizedBox(height: 16.0),
               const Text(
-                'Calorie Suggestion:',
+                'Calories Suggestion:',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               Text(calorieSuggest),
+              const SizedBox(height: 16.0),
               const Text(
-                'Protein Suggestion:',
+                'Proteins Suggestion:',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               Text(proteinSuggest),
