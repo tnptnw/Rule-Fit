@@ -3,6 +3,8 @@ import 'package:http/http.dart' as http;
 import 'package:rule_fit/Token/token_manager.dart';
 import 'dart:convert';
 
+import 'package:rule_fit/pages/signup.dart';
+
 class LogInPage extends StatefulWidget {
   const LogInPage({super.key});
 
@@ -151,7 +153,7 @@ class _LogInPageState extends State<LogInPage> {
                 const SizedBox(height: 10),
                 GestureDetector(
                   onTap: () {
-                    // Add your navigation or any other action here
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpPage()));
                   },
                   child: const Center(
                     child: Text(
@@ -160,9 +162,9 @@ class _LogInPageState extends State<LogInPage> {
                         fontSize: 16.0,
                         fontWeight: FontWeight.normal,
                         color: Colors
-                            .blue, // Change color to indicate it's clickable
+                            .blue, 
                         decoration: TextDecoration
-                            .underline, // Add underline for better indication
+                            .underline, 
                       ),
                     ),
                   ),
