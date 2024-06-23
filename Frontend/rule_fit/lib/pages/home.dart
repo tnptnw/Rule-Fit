@@ -111,7 +111,7 @@ class _HomePageState extends State<HomePage> {
       'fat': int.parse(_fatController.text),
     };
 
-    final url = Uri.parse('http://localhost:4000/parameter/create');
+    final url = Uri.parse('http://10.0.2.2:4000/parameter/create');
 
     try {
       final response = await http.post(

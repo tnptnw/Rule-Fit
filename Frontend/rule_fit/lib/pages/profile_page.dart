@@ -105,7 +105,7 @@ class _ProfilePageState extends State<ProfilePage> {
           .add(await http.MultipartFile.fromPath('picture', image.path));
 
 
-  //     final response = await request.send();
+       final response = await request.send();
 
 
       if (response.statusCode == 200) {
@@ -130,15 +130,15 @@ class _ProfilePageState extends State<ProfilePage> {
     };
 
 
-  //   try {
-  //     final response = await http.post(
-  //       url,
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         'Authorization': 'Bearer $_token',
-  //       },
-  //       body: jsonEncode(updatedData),
-  //     );
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $_token',
+        },
+        body: jsonEncode(updatedData),
+      );
 
 
       if (response.statusCode == 200) {

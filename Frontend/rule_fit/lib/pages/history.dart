@@ -15,7 +15,6 @@ class HistoryPage extends StatefulWidget {
   _HistoryPageState createState() => _HistoryPageState();
 }
 
-
 class _HistoryPageState extends State<HistoryPage> {
   List<Map<String, dynamic>> historyData = [];
   bool isLoading = true;
@@ -42,7 +41,6 @@ class _HistoryPageState extends State<HistoryPage> {
     });
   }
 
-
   @override
   void initState() {
     super.initState();
@@ -53,9 +51,7 @@ class _HistoryPageState extends State<HistoryPage> {
     String? token = await TokenManager().getToken();
     if (token == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-
         const SnackBar(content: Text('Error: Token not available')),
-
       );
     } else {
       setState(() {
@@ -68,14 +64,12 @@ class _HistoryPageState extends State<HistoryPage> {
   Future<void> _fetchHistoryData() async {
     if (_token == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-
         const SnackBar(content: Text('Error: Token is null')),
-
       );
       return;
     }
 
-    final url = Uri.parse('http://localhost:4000/history/getHistory');
+    final url = Uri.parse('http://10.0.2.2:4000/history/getHistory');
 
     try {
       final response = await http.post(
@@ -100,9 +94,7 @@ class _HistoryPageState extends State<HistoryPage> {
     } catch (e) {
       print(e);
       ScaffoldMessenger.of(context).showSnackBar(
-
         const SnackBar(content: Text('Error fetching history data')),
-
       );
     }
   }
@@ -131,7 +123,6 @@ class _HistoryPageState extends State<HistoryPage> {
                 ],
               ),
             ),
-
       bottomNavigationBar: BottomNavBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
@@ -144,7 +135,6 @@ class _HistoryPageState extends State<HistoryPage> {
     final sleepEnd = DateTime.parse(data['sleepEnd']);
     final sleepHours = sleepEnd.difference(sleepStart).inHours;
     final date = DateFormat('dd-MM-yyyy').format(DateTime.parse(data['date']));
-
 
     String score = '';
     if (data['score'] != null && data['score']['totalScore'] != null) {
@@ -173,7 +163,6 @@ class _HistoryPageState extends State<HistoryPage> {
               offset: const Offset(0, 3), // Offset in the x and y direction
             ),
           ],
-
         ),
         child: Row(
           children: [
