@@ -24,12 +24,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-
       title: 'Flutter Demo',
       theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
-          scaffoldBackgroundColor: const Color(0xFFFFF7F1)),
+          scaffoldBackgroundColor: const Color(0xFFFFF7F1),
+          fontFamily: 'KleeOne',
+      ),
       initialRoute: '/login', // Start with login page
       routes: {
         '/login': (context) => const LogInPage(),
@@ -38,7 +39,6 @@ class MyApp extends StatelessWidget {
         '/history': (context) => const HistoryPage(),
       },
     );
-
   }
 }
 

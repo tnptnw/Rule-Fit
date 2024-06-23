@@ -15,7 +15,6 @@ class HistoryPage extends StatefulWidget {
   _HistoryPageState createState() => _HistoryPageState();
 }
 
-
 class _HistoryPageState extends State<HistoryPage> {
   List<Map<String, dynamic>> historyData = [];
   bool isLoading = true;
@@ -42,7 +41,6 @@ class _HistoryPageState extends State<HistoryPage> {
     });
   }
 
-
   @override
   void initState() {
     super.initState();
@@ -53,9 +51,7 @@ class _HistoryPageState extends State<HistoryPage> {
     String? token = await TokenManager().getToken();
     if (token == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-
         const SnackBar(content: Text('Error: Token not available')),
-
       );
     } else {
       setState(() {
@@ -68,9 +64,7 @@ class _HistoryPageState extends State<HistoryPage> {
   Future<void> _fetchHistoryData() async {
     if (_token == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-
         const SnackBar(content: Text('Error: Token is null')),
-
       );
       return;
     }
@@ -90,6 +84,7 @@ class _HistoryPageState extends State<HistoryPage> {
         setState(() {
           historyData = List<Map<String, dynamic>>.from(
               jsonDecode(response.body)['data']);
+
           isLoading = false;
         });
       } else {
@@ -100,9 +95,7 @@ class _HistoryPageState extends State<HistoryPage> {
     } catch (e) {
       print(e);
       ScaffoldMessenger.of(context).showSnackBar(
-
         const SnackBar(content: Text('Error fetching history data')),
-
       );
     }
   }
@@ -131,7 +124,6 @@ class _HistoryPageState extends State<HistoryPage> {
                 ],
               ),
             ),
-
       bottomNavigationBar: BottomNavBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
@@ -142,9 +134,11 @@ class _HistoryPageState extends State<HistoryPage> {
   Widget buildHistoryCard(Map<String, dynamic> data) {
     final sleepStart = DateTime.parse(data['sleepStart']);
     final sleepEnd = DateTime.parse(data['sleepEnd']);
-    final sleepHours = sleepEnd.difference(sleepStart).inHours;
+    final sleepDuration = sleepEnd.isBefore(sleepStart)
+        ? sleepEnd.add(Duration(days: 1)).difference(sleepStart)
+        : sleepEnd.difference(sleepStart);
+    final sleepHours = sleepDuration.inHours;
     final date = DateFormat('dd-MM-yyyy').format(DateTime.parse(data['date']));
-
 
     String score = '';
     if (data['score'] != null && data['score']['totalScore'] != null) {
@@ -156,6 +150,7 @@ class _HistoryPageState extends State<HistoryPage> {
         score = score.substring(0, 2); // Take the first two digits
       }
     }
+    String name = data['score']['name'] ?? '';
 
     return Center(
       child: Container(
@@ -173,7 +168,6 @@ class _HistoryPageState extends State<HistoryPage> {
               offset: const Offset(0, 3), // Offset in the x and y direction
             ),
           ],
-
         ),
         child: Row(
           children: [
@@ -199,6 +193,13 @@ class _HistoryPageState extends State<HistoryPage> {
                       style: const TextStyle(
                         color: Colors.black,
                         fontSize: 50,
+                      ),
+                    ),
+                    Text(
+                      name,
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 20,
                       ),
                     ),
                   ],
