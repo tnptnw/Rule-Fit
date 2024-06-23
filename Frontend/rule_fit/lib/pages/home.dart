@@ -466,7 +466,13 @@ class _HomePageState extends State<HomePage> {
                     showSuggestions = false;
                   });
                 },
-                child: const Text('Go Back'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFEDC4A6).withOpacity(0.75),
+                ),
+                child: const Text(
+                  'Go Back',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ],
 
