@@ -84,6 +84,7 @@ class _HistoryPageState extends State<HistoryPage> {
         setState(() {
           historyData = List<Map<String, dynamic>>.from(
               jsonDecode(response.body)['data']);
+
           isLoading = false;
         });
       } else {
@@ -133,7 +134,10 @@ class _HistoryPageState extends State<HistoryPage> {
   Widget buildHistoryCard(Map<String, dynamic> data) {
     final sleepStart = DateTime.parse(data['sleepStart']);
     final sleepEnd = DateTime.parse(data['sleepEnd']);
-    final sleepHours = sleepEnd.difference(sleepStart).inHours;
+    final sleepDuration = sleepEnd.isBefore(sleepStart)
+        ? sleepEnd.add(Duration(days: 1)).difference(sleepStart)
+        : sleepEnd.difference(sleepStart);
+    final sleepHours = sleepDuration.inHours;
     final date = DateFormat('dd-MM-yyyy').format(DateTime.parse(data['date']));
 
     String score = '';
@@ -146,6 +150,7 @@ class _HistoryPageState extends State<HistoryPage> {
         score = score.substring(0, 2); // Take the first two digits
       }
     }
+    String name = data['score']['name'] ?? '';
 
     return Center(
       child: Container(
@@ -188,6 +193,13 @@ class _HistoryPageState extends State<HistoryPage> {
                       style: const TextStyle(
                         color: Colors.black,
                         fontSize: 50,
+                      ),
+                    ),
+                    Text(
+                      name,
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 20,
                       ),
                     ),
                   ],

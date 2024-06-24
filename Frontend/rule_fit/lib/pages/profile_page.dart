@@ -27,6 +27,8 @@ class _ProfilePageState extends State<ProfilePage> {
   final TextEditingController _nameController = TextEditingController();
   String? _token;
   int _selectedIndex = 2;
+  List<Map<String, dynamic>> historyData = [];
+  double averageScore = 0.0;
 
   void _onItemTapped(int index) {
     setState(() {
@@ -61,7 +63,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
     if (_token != null) {
       _fetchProfileData();
-      print(_token);
     } else {
       print("token not available");
     }
@@ -91,13 +92,62 @@ class _ProfilePageState extends State<ProfilePage> {
           profilePicture = userData['image'] ?? '';
           print(profilePicture);
           isLoading = false;
-          print(response.body);
         });
+        _fetchHistoryData();
       } else {
         print(response.body);
       }
     } catch (e) {
       print(e);
+    }
+  }
+
+  Future<void> _fetchHistoryData() async {
+    final url = Uri.parse('http://localhost:4000/history/getHistory');
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $_token',
+        },
+        body: jsonEncode({'token': _token}),
+      );
+
+      if (response.statusCode == 200) {
+        List<Map<String, dynamic>> allHistoryData =
+            List<Map<String, dynamic>>.from(jsonDecode(response.body)['data']);
+
+        // Filter data for the last 7 days
+        DateTime today = DateTime.now();
+        DateTime weekAgo = today.subtract(Duration(days: 7));
+
+        List<Map<String, dynamic>> filteredData = allHistoryData.where((entry) {
+          DateTime entryDate = DateTime.parse(entry['date']);
+          return entryDate.isAfter(weekAgo) && entryDate.isBefore(today);
+        }).toList();
+
+        // Calculate average score
+        double totalScore = 0.0;
+        for (var entry in filteredData) {
+          if (entry['score'] != null && entry['score']['totalScore'] != null) {
+            totalScore += double.parse(entry['score']['totalScore'].toString());
+          }
+        }
+
+        if (filteredData.isNotEmpty) {
+          averageScore = totalScore / filteredData.length;
+        }
+
+        setState(() {
+          historyData = filteredData;
+        });
+      } else {
+        print('Error fetching history data: ${response.body}');
+      }
+    } catch (e) {
+      print('Exception during history data fetch: $e');
     }
   }
 
@@ -289,7 +339,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       children: [
                         GestureDetector(
                           onTap: _showFullImage,
-                          child: CircleAvatar(
+                          child: const CircleAvatar(
                             radius: 80,
                             backgroundImage: profilePicture.isNotEmpty
                                 ? NetworkImage(profilePicture)
@@ -317,12 +367,30 @@ class _ProfilePageState extends State<ProfilePage> {
                     const SizedBox(height: 30.0),
                     GestureDetector(
                       onTap: _showEditUsernameDialog,
-                      child: Text(
-                        userData['username'] ?? '',
-                        style: const TextStyle(fontSize: 25.0),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            userData['username'] ?? '',
+                            style: const TextStyle(fontSize: 25.0),
+                          ),
+                          const SizedBox(width: 4.0),
+                          const Icon(
+                            Icons.edit,
+                            size: 20.0,
+                            color: Colors.grey,
+                          ),
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 40.0),
+                    const SizedBox(height: 20.0),
+                    const Text(
+                      'Average Score (Last 7 days)',
+                      style: TextStyle(fontSize: 18.0),
+                    ),
+                    Text(averageScore.toStringAsFixed(2),
+                        style: const TextStyle(fontSize: 25.0)),
+                    const SizedBox(height: 20.0),
                     ElevatedButton(
                       onPressed: _logout,
                       style: ElevatedButton.styleFrom(

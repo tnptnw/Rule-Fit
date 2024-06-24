@@ -37,6 +37,7 @@ class _HomePageState extends State<HomePage> {
   String healthName = "";
   int _selectedIndex = 1;
   String? _token;
+  String errorMessage = "";
 
   void _onItemTapped(int index) {
     setState(() {
@@ -87,12 +88,34 @@ class _HomePageState extends State<HomePage> {
         now.year, now.month, now.day, timeOfDay.hour, timeOfDay.minute);
   }
 
+  bool _validateFields() {
+    if (_heightController.text.isEmpty ||
+        _weightController.text.isEmpty ||
+        _caloriesController.text.isEmpty ||
+        _proteinController.text.isEmpty ||
+        _carbsController.text.isEmpty ||
+        _fatController.text.isEmpty) {
+      setState(() {
+        errorMessage = 'Please fill in all fields';
+      });
+      return false;
+    }
+    setState(() {
+      errorMessage = ''; // Clear the error message if all fields are filled
+    });
+    return true;
+  }
+
   Future<void> _submitForm() async {
     if (_token == null) {
       // Handle token not being available
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Error: Token not available')),
       );
+      return;
+    }
+
+    if (!_validateFields()) {
       return;
     }
 
@@ -157,7 +180,7 @@ class _HomePageState extends State<HomePage> {
       filled: true,
       fillColor: Colors.white,
       contentPadding:
-          const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+          const EdgeInsets.symmetric(vertical: 1.0, horizontal: 20.0),
     );
   }
 
@@ -175,8 +198,10 @@ class _HomePageState extends State<HomePage> {
               children: [
                 const Text(
                   'Health Score',
-                  style:
-                      TextStyle(fontSize: 20.0, fontWeight: FontWeight.normal),
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.normal,
+                  ),
                 ),
                 Text(
                   '$_healthScore',
@@ -203,17 +228,20 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    'Height (cm)',
+                    '     Height (cm)',
                     style: TextStyle(fontSize: 16.0),
                   ),
                   SizedBox(
-                    width: 200,
+                    width: 130,
                     child: TextFormField(
                       controller: _heightController,
                       decoration: _buildInputDecoration(''),
                       keyboardType: TextInputType.number,
                       textAlign: TextAlign.end,
                       style: const TextStyle(fontSize: 14.0),
+                      onChanged: (value) {
+                        _validateFields();
+                      },
                     ),
                   ),
                 ],
@@ -224,17 +252,20 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    'Weight (kg)',
+                    '     Weight (kg)',
                     style: TextStyle(fontSize: 16.0),
                   ),
                   SizedBox(
-                    width: 200,
+                    width: 130,
                     child: TextFormField(
                       controller: _weightController,
                       decoration: _buildInputDecoration(''),
                       keyboardType: TextInputType.number,
                       textAlign: TextAlign.end,
                       style: const TextStyle(fontSize: 14.0),
+                      onChanged: (value) {
+                        _validateFields();
+                      },
                     ),
                   ),
                 ],
@@ -251,11 +282,11 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    'Sleep Time',
+                    '     Sleep Start',
                     style: TextStyle(fontSize: 16.0),
                   ),
                   SizedBox(
-                    width: 200,
+                    width: 130,
                     child: InkWell(
                       onTap: () async {
                         final selectedTime = await showTimePicker(
@@ -267,6 +298,7 @@ class _HomePageState extends State<HomePage> {
                             _sleepTime = selectedTime;
                           });
                         }
+                        _validateFields();
                       },
                       child: InputDecorator(
                         decoration: _buildInputDecoration(''),
@@ -286,11 +318,11 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    'Wake Up Time',
+                    '     Sleep End',
                     style: TextStyle(fontSize: 16.0),
                   ),
                   SizedBox(
-                    width: 200,
+                    width: 130,
                     child: InkWell(
                       onTap: () async {
                         final selectedTime = await showTimePicker(
@@ -302,6 +334,7 @@ class _HomePageState extends State<HomePage> {
                             _wakeUpTime = selectedTime;
                           });
                         }
+                        _validateFields();
                       },
                       child: InputDecorator(
                         decoration: _buildInputDecoration(''),
@@ -327,17 +360,20 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    'Calories/day',
+                    '     Calories/day',
                     style: TextStyle(fontSize: 16.0),
                   ),
                   SizedBox(
-                    width: 200,
+                    width: 130,
                     child: TextFormField(
                       controller: _caloriesController,
                       decoration: _buildInputDecoration(''),
                       keyboardType: TextInputType.number,
                       textAlign: TextAlign.end,
                       style: const TextStyle(fontSize: 14.0),
+                      onChanged: (value) {
+                        _validateFields();
+                      },
                     ),
                   ),
                 ],
@@ -348,17 +384,20 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    'Protein/day',
+                    '     Protein/day',
                     style: TextStyle(fontSize: 16.0),
                   ),
                   SizedBox(
-                    width: 200,
+                    width: 130,
                     child: TextFormField(
                       controller: _proteinController,
                       decoration: _buildInputDecoration(''),
                       keyboardType: TextInputType.number,
                       textAlign: TextAlign.end,
                       style: const TextStyle(fontSize: 14.0),
+                      onChanged: (value) {
+                        _validateFields();
+                      },
                     ),
                   ),
                 ],
@@ -369,17 +408,20 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    'Carbs/day',
+                    '     Carbs/day',
                     style: TextStyle(fontSize: 16.0),
                   ),
                   SizedBox(
-                    width: 200,
+                    width: 130,
                     child: TextFormField(
                       controller: _carbsController,
                       decoration: _buildInputDecoration(''),
                       keyboardType: TextInputType.number,
                       textAlign: TextAlign.end,
                       style: const TextStyle(fontSize: 14.0),
+                      onChanged: (value) {
+                        _validateFields();
+                      },
                     ),
                   ),
                 ],
@@ -390,30 +432,37 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    'Fat/day',
+                    '     Fat/day',
                     style: TextStyle(fontSize: 16.0),
                   ),
                   SizedBox(
-                    width: 200,
+                    width: 130,
                     child: TextFormField(
                       controller: _fatController,
                       decoration: _buildInputDecoration(''),
                       keyboardType: TextInputType.number,
                       textAlign: TextAlign.end,
                       style: const TextStyle(fontSize: 14.0),
+                      onChanged: (value) {
+                        _validateFields();
+                      },
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 20.0),
-              // See My Score button
+              if(errorMessage.isNotEmpty)
+                Text(
+                  errorMessage,
+                  style: const TextStyle(color: Colors.red),
+                ),
               ElevatedButton(
-                onPressed: () {
+                onPressed: _validateFields() ? () {
                   setState(() {
                     showSuggestions = true;
                     showInputFields = false;
                   });
-                },
+                } : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFEDC4A6).withOpacity(0.75),
                 ),
@@ -437,12 +486,13 @@ class _HomePageState extends State<HomePage> {
               Text(sleepSuggest),
               const SizedBox(height: 16.0),
               const Text(
-                'Calorie Suggestion:',
+                'Calories Suggestion:',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               Text(calorieSuggest),
+              const SizedBox(height: 16.0),
               const Text(
-                'Protein Suggestion:',
+                'Proteins Suggestion:',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               Text(proteinSuggest),
@@ -466,7 +516,13 @@ class _HomePageState extends State<HomePage> {
                     showSuggestions = false;
                   });
                 },
-                child: const Text('Go Back'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFEDC4A6).withOpacity(0.75),
+                ),
+                child: const Text(
+                  'Go Back',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ],
 
