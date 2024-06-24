@@ -451,18 +451,23 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
               const SizedBox(height: 20.0),
-              if(errorMessage.isNotEmpty)
+              if (errorMessage.isNotEmpty)
                 Text(
                   errorMessage,
                   style: const TextStyle(color: Colors.red),
                 ),
+              const SizedBox(
+                height: 20,
+              ),
               ElevatedButton(
-                onPressed: _validateFields() ? () {
-                  setState(() {
-                    showSuggestions = true;
-                    showInputFields = false;
-                  });
-                } : null,
+                onPressed: _validateFields()
+                    ? () {
+                        setState(() {
+                          showSuggestions = true;
+                          showInputFields = false;
+                        });
+                      }
+                    : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFEDC4A6).withOpacity(0.75),
                 ),
