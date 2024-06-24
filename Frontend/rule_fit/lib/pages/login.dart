@@ -34,7 +34,7 @@ class _LogInPageState extends State<LogInPage> {
       };
 
       // Define the endpoint URL of your backend
-      final url = Uri.parse('http://localhost:4000/auth/login');
+      final url = Uri.parse('http://10.0.2.2:4000/auth/login');
 
       // Send the POST request
       try {
@@ -45,6 +45,7 @@ class _LogInPageState extends State<LogInPage> {
         );
 
         if (response.statusCode == 200) {
+          print('Login successfully');
           // Handle successful login, e.g., navigate to another page
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Login successful')),
@@ -59,6 +60,7 @@ class _LogInPageState extends State<LogInPage> {
           Navigator.pushReplacementNamed(context, '/home');
           // Navigator.pushReplacementNamed(context, '/home');
         } else {
+          print('Failed to login: ${response.body}');
           // Handle errors
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Login failed: ${response.body}')),

@@ -69,7 +69,7 @@ class _HistoryPageState extends State<HistoryPage> {
       return;
     }
 
-    final url = Uri.parse('http://localhost:4000/history/getHistory');
+    final url = Uri.parse('http://10.0.2.2:4000/history/getHistory');
 
     try {
       final response = await http.post(

@@ -60,7 +60,7 @@ model users {
   password  String       @db.VarChar(255)
   birthyear Int
   gender    users_gender
-  image     Bytes?       @db.Blob
+  image     String?      @db.Text
   parameter parameter[]
 }
 

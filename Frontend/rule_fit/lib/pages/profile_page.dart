@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:image_picker/image_picker.dart';
 import 'package:rule_fit/Token/token_manager.dart';
 import 'package:rule_fit/components/bottom_bar.dart';
@@ -17,6 +21,8 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   late Map<String, dynamic> userData;
+  Map<String, dynamic>? profileResponse;
+  String profilePicture = '';
   bool isLoading = true;
   final TextEditingController _nameController = TextEditingController();
   String? _token;
@@ -66,7 +72,7 @@ class _ProfilePageState extends State<ProfilePage> {
     final formData = {
       'token': _token,
     };
-    final url = Uri.parse('http://localhost:4000/user/getUsername');
+    final url = Uri.parse('http://10.0.2.2:4000/user/getUsername');
 
     try {
       final response = await http.post(
@@ -82,6 +88,9 @@ class _ProfilePageState extends State<ProfilePage> {
         setState(() {
           userData = jsonDecode(response.body)['data'];
           _nameController.text = userData['username'];
+          print(userData['image']);
+          profilePicture = userData['image'] ?? '';
+          print(profilePicture);
           isLoading = false;
         });
         _fetchHistoryData();
@@ -146,31 +155,64 @@ class _ProfilePageState extends State<ProfilePage> {
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
 
-    if (image != null) {
-      final url = Uri.parse('http://localhost:4000/user/updateImage');
+    if (image != null && _token != null) {
+      print(image.path);
+      print(image.name);
+
+      // Create multipart request for uploading
+      final url = Uri.parse('http://10.0.2.2:4000/user/updateImage/$_token');
       final request = http.MultipartRequest('POST', url);
+
+      // Add token as a field in the request
       request.headers['Authorization'] = 'Bearer $_token';
-      request.files
-          .add(await http.MultipartFile.fromPath('picture', image.path));
+      request.fields['token'] = _token!;
 
-      final response = await request.send();
+      // Add image file as a part of the request
+      final imageFile = File(image.path);
+      request.files.add(http.MultipartFile(
+        'file', // this is the name of the field in the multipart request
+        imageFile.readAsBytes().asStream(),
+        imageFile.lengthSync(),
+        filename: image.name,
+        contentType: MediaType("image",
+            imageFile.path.split('.').last), // Adjust as per your image type
+      ));
 
-      if (response.statusCode == 200) {
-        final responseData = await response.stream.bytesToString();
+      try {
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
         setState(() {
-          userData['profilePicture'] =
-              jsonDecode(responseData)['profilePicture'];
+          profileResponse = jsonDecode(response.body);
+          profilePicture = profileResponse!['data'];
         });
-      } else {
+
+        if (response.statusCode == 200) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Image uploaded successfully')),
+          );
+        } else {
+          print('Failed to upload image. Status code: ${response.statusCode}');
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Failed to upload image')),
+          );
+        }
+      } catch (e) {
+        print('Error uploading image: $e');
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Failed to upload image')),
         );
       }
+    } else {
+      print('No image selected or token is null');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No image selected or token is null')),
+      );
     }
   }
 
   Future<void> _updateUsername() async {
-    final url = Uri.parse('http://localhost:4000/user/updateUsername');
+    final url = Uri.parse('http://10.0.2.2:4000/user/updateUsername');
     final updatedData = {
       'token': _token,
       'username': _nameController.text,
@@ -240,10 +282,18 @@ class _ProfilePageState extends State<ProfilePage> {
         return Dialog(
           child: GestureDetector(
             onTap: () => Navigator.of(context).pop(),
-            child: Image.network(
-              userData['profilePicture'] ??
-                  'assets/default_profile_picture.png',
+            child: Image(
+              image: profilePicture.isNotEmpty
+                  ? NetworkImage(profilePicture)
+                  : const AssetImage('assets/default_profile_picture.png'),
               fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                print('Error loading image: $error');
+                return Image.asset(
+                  'assets/logo.png',
+                  fit: BoxFit.cover,
+                );
+              },
             ),
           ),
         );
@@ -289,13 +339,12 @@ class _ProfilePageState extends State<ProfilePage> {
                       children: [
                         GestureDetector(
                           onTap: _showFullImage,
-                          child: const CircleAvatar(
+                          child: CircleAvatar(
                             radius: 80,
-                            // backgroundImage: userData['profilePicture'] != null
-                            //     ? NetworkImage(userData['profilePicture'])
-                            //     : const AssetImage(
-                            //             'assets/default_profile_picture.png')
-                            //         as ImageProvider,
+                            backgroundImage: profilePicture.isNotEmpty
+                                ? NetworkImage(profilePicture)
+                                : const AssetImage(
+                                    'assets/default_profile_picture.png'),
                           ),
                         ),
                         Positioned(
