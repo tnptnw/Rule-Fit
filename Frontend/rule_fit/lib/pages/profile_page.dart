@@ -339,7 +339,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       children: [
                         GestureDetector(
                           onTap: _showFullImage,
-                          child: const CircleAvatar(
+                          child: CircleAvatar(
                             radius: 80,
                             backgroundImage: profilePicture.isNotEmpty
                                 ? NetworkImage(profilePicture)
