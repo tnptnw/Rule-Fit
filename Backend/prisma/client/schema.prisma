@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "./client"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model parameter {
+  parameterId Int      @id @default(autoincrement())
+  date        DateTime @db.Date
+  height      Decimal  @db.Decimal(5, 2)
+  weight      Decimal  @db.Decimal(5, 2)
+  sleepStart  DateTime @db.Time(0)
+  sleepEnd    DateTime @db.Time(0)
+  calorie     Int
+  protein     Int
+  cabohydrate Int
+  fat         Int
+  userId      Int
+  scoreId     Int
+  suggestId   Int
+  score       score    @relation(fields: [scoreId], references: [scoreId], onUpdate: Restrict, map: "scoreId")
+  suggest     suggest  @relation(fields: [suggestId], references: [suggestId], onUpdate: Restrict, map: "suggestId")
+  users       users    @relation(fields: [userId], references: [id], onUpdate: Restrict, map: "userId")
+
+  @@index([scoreId], map: "scoreId")
+  @@index([userId], map: "userId")
+  @@index([suggestId], map: "suggestId")
+}
+
+model score {
+  scoreId          Int         @id @default(autoincrement())
+  totalScore       Float       @db.Float
+  BMIScore         Float       @db.Float
+  sleepScore       Float       @db.Float
+  calorieScore     Float       @db.Float
+  proteinScore     Float       @db.Float
+  cabohydrateScore Float       @db.Float
+  fatScore         Float       @db.Float
+  name             String      @db.VarChar(255)
+  parameter        parameter[]
+}
+
+model suggest {
+  suggestId          Int         @id @default(autoincrement())
+  BMISuggest         String      @db.Text
+  sleepSuggest       String      @db.Text
+  calorieSuggest     String      @db.Text
+  proteinSuggest     String      @db.Text
+  cabohydrateSuggest String      @db.Text
+  fatSuggest         String      @db.Text
+  parameter          parameter[]
+}
+
+model users {
+  id        Int          @id @default(autoincrement())
+  username  String       @db.VarChar(255)
+  password  String       @db.VarChar(255)
+  birthyear Int
+  gender    users_gender
+  image     String?      @db.Text
+  parameter parameter[]
+}
+
+enum users_gender {
+  male
+  female
+}

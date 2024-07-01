@@ -1,8 +1,6 @@
-import { PrismaClient } from "@prisma/client";
-
+import { prisma } from "../..";
 class suggestService {
   async getSuggest(reqBody: any) {
-    const prisma = new PrismaClient();
     const parameterId = reqBody.parameterId;
     const data = await prisma.parameter.findUnique({
       where: {
