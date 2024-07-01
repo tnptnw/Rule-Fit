@@ -8,6 +8,7 @@ import 'dart:typed_data';
 import 'package:image_picker/image_picker.dart';
 import 'package:rule_fit/Token/token_manager.dart';
 import 'package:rule_fit/components/bottom_bar.dart';
+import 'package:rule_fit/constant.dart';
 import 'package:rule_fit/pages/history.dart';
 import 'package:rule_fit/pages/home.dart';
 import 'package:rule_fit/pages/login.dart';
@@ -72,7 +73,7 @@ class _ProfilePageState extends State<ProfilePage> {
     final formData = {
       'token': _token,
     };
-    final url = Uri.parse('http://10.0.2.2:4000/user/getUsername');
+    final url = Uri.parse('${EnvironmentConstant.baseUrl}/user/getUsername');
 
     try {
       final response = await http.post(
@@ -103,7 +104,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<void> _fetchHistoryData() async {
-    final url = Uri.parse('http://localhost:4000/history/getHistory');
+    final url = Uri.parse('${EnvironmentConstant.baseUrl}/history/getHistory');
 
     try {
       final response = await http.post(
@@ -160,7 +161,7 @@ class _ProfilePageState extends State<ProfilePage> {
       print(image.name);
 
       // Create multipart request for uploading
-      final url = Uri.parse('http://10.0.2.2:4000/user/updateImage/$_token');
+      final url = Uri.parse('${EnvironmentConstant.baseUrl}/user/updateImage/$_token');
       final request = http.MultipartRequest('POST', url);
 
       // Add token as a field in the request
@@ -212,7 +213,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<void> _updateUsername() async {
-    final url = Uri.parse('http://10.0.2.2:4000/user/updateUsername');
+    final url = Uri.parse('${EnvironmentConstant.baseUrl}/user/updateUsername');
     final updatedData = {
       'token': _token,
       'username': _nameController.text,

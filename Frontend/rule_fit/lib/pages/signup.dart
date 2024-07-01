@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:rule_fit/constant.dart';
 import 'dart:convert';
 
 import 'package:rule_fit/pages/login.dart';
@@ -42,7 +43,7 @@ class _SignUpPageState extends State<SignUpPage> {
       print(formData);
 
       // Define the endpoint URL of your backend
-      final url = Uri.parse('http://10.0.2.2:4000/auth/regis');
+      final url = Uri.parse('${EnvironmentConstant.baseUrl}/auth/regis');
 
       // Send the POST request
       try {
@@ -79,7 +80,8 @@ class _SignUpPageState extends State<SignUpPage> {
       ),
       filled: true,
       fillColor: Colors.white,
-      contentPadding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+      contentPadding:
+          const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
     );
   }
 
@@ -145,9 +147,11 @@ class _SignUpPageState extends State<SignUpPage> {
                       borderRadius: BorderRadius.circular(25.0),
                       // borderSide: BorderSide.none,
                     ),
-                    contentPadding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 15.0, horizontal: 20.0),
                   ),
-                  icon: const Icon(Icons.arrow_drop_down, color: Color(0xFF759873)),
+                  icon: const Icon(Icons.arrow_drop_down,
+                      color: Color(0xFF759873)),
                   style: const TextStyle(
                     color: Colors.black87,
                     fontSize: 16.0,
@@ -212,7 +216,8 @@ class _SignUpPageState extends State<SignUpPage> {
                 const SizedBox(height: 10),
                 GestureDetector(
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => LogInPage()));
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => LogInPage()));
                   },
                   child: const Center(
                     child: Text(
@@ -220,10 +225,8 @@ class _SignUpPageState extends State<SignUpPage> {
                       style: TextStyle(
                         fontSize: 16.0,
                         fontWeight: FontWeight.normal,
-                        color: Colors
-                            .blue, 
-                        decoration: TextDecoration
-                            .underline, 
+                        color: Colors.blue,
+                        decoration: TextDecoration.underline,
                       ),
                     ),
                   ),
