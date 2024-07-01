@@ -159,7 +159,7 @@ class parameterService {
     console.log("calorieSuggest: ", calorieSuggest);
 
     // Calculate protein score
-    const recommendedProtein = 0.8 * reqBody.weight;
+    const recommendedProtein = 1 * reqBody.weight;
     let proteinScore =
       8 -
       (Math.abs(reqBody.protein - recommendedProtein) / recommendedProtein) * 8;

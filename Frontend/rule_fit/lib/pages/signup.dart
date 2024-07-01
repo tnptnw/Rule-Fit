@@ -57,6 +57,8 @@ class _SignUpPageState extends State<SignUpPage> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Signup successful')),
           );
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => LogInPage()));
         } else {
           // Handle errors
           ScaffoldMessenger.of(context).showSnackBar(
@@ -79,7 +81,8 @@ class _SignUpPageState extends State<SignUpPage> {
       ),
       filled: true,
       fillColor: Colors.white,
-      contentPadding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+      contentPadding:
+          const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
     );
   }
 
@@ -145,9 +148,11 @@ class _SignUpPageState extends State<SignUpPage> {
                       borderRadius: BorderRadius.circular(25.0),
                       // borderSide: BorderSide.none,
                     ),
-                    contentPadding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 15.0, horizontal: 20.0),
                   ),
-                  icon: const Icon(Icons.arrow_drop_down, color: Color(0xFF759873)),
+                  icon: const Icon(Icons.arrow_drop_down,
+                      color: Color(0xFF759873)),
                   style: const TextStyle(
                     color: Colors.black87,
                     fontSize: 16.0,
@@ -212,7 +217,8 @@ class _SignUpPageState extends State<SignUpPage> {
                 const SizedBox(height: 10),
                 GestureDetector(
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => LogInPage()));
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => LogInPage()));
                   },
                   child: const Center(
                     child: Text(
@@ -220,10 +226,8 @@ class _SignUpPageState extends State<SignUpPage> {
                       style: TextStyle(
                         fontSize: 16.0,
                         fontWeight: FontWeight.normal,
-                        color: Colors
-                            .blue, 
-                        decoration: TextDecoration
-                            .underline, 
+                        color: Colors.blue,
+                        decoration: TextDecoration.underline,
                       ),
                     ),
                   ),
