@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:rule_fit/Token/token_manager.dart';
+import 'package:rule_fit/constant.dart';
 import 'dart:convert';
 
 import 'package:rule_fit/pages/signup.dart';
@@ -34,7 +35,7 @@ class _LogInPageState extends State<LogInPage> {
       };
 
       // Define the endpoint URL of your backend
-      final url = Uri.parse('http://10.0.2.2:4000/auth/login');
+      final url = Uri.parse('${EnvironmentConstant.baseUrl}/auth/login');
 
       // Send the POST request
       try {

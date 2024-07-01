@@ -1,0 +1,13 @@
+services:
+  server:
+    image: rulefit
+    container_name: rulefit_server
+    restart: unless-stopped
+    networks:
+      reverseproxy:
+        ipv4_address: 192.168.0.11
+
+networks:
+  reverseproxy:
+    external: true
+    name: reverseproxy

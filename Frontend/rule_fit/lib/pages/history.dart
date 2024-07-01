@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:intl/intl.dart';
 
 import 'package:rule_fit/components/bottom_bar.dart';
+import 'package:rule_fit/constant.dart';
 import 'package:rule_fit/pages/home.dart';
 import 'package:rule_fit/pages/profile_page.dart';
 
@@ -69,7 +70,7 @@ class _HistoryPageState extends State<HistoryPage> {
       return;
     }
 
-    final url = Uri.parse('http://10.0.2.2:4000/history/getHistory');
+    final url = Uri.parse('${EnvironmentConstant.baseUrl}/history/getHistory');
 
     try {
       final response = await http.post(

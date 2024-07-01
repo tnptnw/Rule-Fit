@@ -1,8 +1,6 @@
-import { PrismaClient } from "@prisma/client";
-
+import { prisma } from '../../index';
 class scoreService {
     async getScore(reqBody: any) {
-        const prisma = new PrismaClient();
         const parameterId = reqBody.parameterId;
         const data = await prisma.parameter.findUnique({
             where: {

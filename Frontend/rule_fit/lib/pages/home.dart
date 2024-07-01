@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:rule_fit/Token/token_manager.dart';
 import 'package:rule_fit/components/bottom_bar.dart';
+import 'package:rule_fit/constant.dart';
 import 'package:rule_fit/pages/history.dart';
 import 'package:rule_fit/pages/profile_page.dart';
 
@@ -134,7 +135,7 @@ class _HomePageState extends State<HomePage> {
       'fat': int.parse(_fatController.text),
     };
 
-    final url = Uri.parse('http://10.0.2.2:4000/parameter/create');
+    final url = Uri.parse('${EnvironmentConstant.baseUrl}/parameter/create');
 
     try {
       final response = await http.post(

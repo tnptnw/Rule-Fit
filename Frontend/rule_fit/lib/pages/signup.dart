@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:rule_fit/constant.dart';
 import 'dart:convert';
 
 import 'package:rule_fit/pages/login.dart';
@@ -42,7 +43,7 @@ class _SignUpPageState extends State<SignUpPage> {
       print(formData);
 
       // Define the endpoint URL of your backend
-      final url = Uri.parse('http://10.0.2.2:4000/auth/regis');
+      final url = Uri.parse('${EnvironmentConstant.baseUrl}/auth/regis');
 
       // Send the POST request
       try {

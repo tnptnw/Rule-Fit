@@ -1,10 +1,9 @@
-import { PrismaClient } from "@prisma/client";
 import verifyToken from "../../controllers/auth/verifyToken";
+import { prisma } from "../../index";
 
 class userService {
   async updateImage(token: string, imgURL: string) {
     console.log("geting in service...");
-    const prisma = new PrismaClient();
     const userId = verifyToken(token);
     const user = prisma.users.update({
       where: {

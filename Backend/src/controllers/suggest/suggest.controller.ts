@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
 import suggestService from "../../services/suggest/getSuggest";
 
 interface ISuggest {
