@@ -176,13 +176,17 @@ const config = {
         "fromEnvVar": null,
         "value": "darwin-arm64",
         "native": true
+      },
+      {
+        "fromEnvVar": null,
+        "value": "debian-openssl-1.1.x"
       }
     ],
     "previewFeatures": [],
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": "../../.env",
+    "rootEnvPath": null,
     "schemaEnvPath": "../../.env"
   },
   "relativePath": "..",
@@ -201,8 +205,8 @@ const config = {
       }
     }
   },
-  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"./client\"\n}\n\ndatasource db {\n  provider = \"mysql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel parameter {\n  parameterId Int      @id @default(autoincrement())\n  date        DateTime @db.Date\n  height      Decimal  @db.Decimal(5, 2)\n  weight      Decimal  @db.Decimal(5, 2)\n  sleepStart  DateTime @db.Time(0)\n  sleepEnd    DateTime @db.Time(0)\n  calorie     Int\n  protein     Int\n  cabohydrate Int\n  fat         Int\n  userId      Int\n  scoreId     Int\n  suggestId   Int\n  score       score    @relation(fields: [scoreId], references: [scoreId], onUpdate: Restrict, map: \"scoreId\")\n  suggest     suggest  @relation(fields: [suggestId], references: [suggestId], onUpdate: Restrict, map: \"suggestId\")\n  users       users    @relation(fields: [userId], references: [id], onUpdate: Restrict, map: \"userId\")\n\n  @@index([scoreId], map: \"scoreId\")\n  @@index([userId], map: \"userId\")\n  @@index([suggestId], map: \"suggestId\")\n}\n\nmodel score {\n  scoreId          Int         @id @default(autoincrement())\n  totalScore       Float       @db.Float\n  BMIScore         Float       @db.Float\n  sleepScore       Float       @db.Float\n  calorieScore     Float       @db.Float\n  proteinScore     Float       @db.Float\n  cabohydrateScore Float       @db.Float\n  fatScore         Float       @db.Float\n  name             String      @db.VarChar(255)\n  parameter        parameter[]\n}\n\nmodel suggest {\n  suggestId          Int         @id @default(autoincrement())\n  BMISuggest         String      @db.Text\n  sleepSuggest       String      @db.Text\n  calorieSuggest     String      @db.Text\n  proteinSuggest     String      @db.Text\n  cabohydrateSuggest String      @db.Text\n  fatSuggest         String      @db.Text\n  parameter          parameter[]\n}\n\nmodel users {\n  id        Int          @id @default(autoincrement())\n  username  String       @db.VarChar(255)\n  password  String       @db.VarChar(255)\n  birthyear Int\n  gender    users_gender\n  image     String?      @db.Text\n  parameter parameter[]\n}\n\nenum users_gender {\n  male\n  female\n}\n",
-  "inlineSchemaHash": "e30835c88b3a9f3b61f435c23fdf251ce6bd029de78299fe922a62489f9ae508",
+  "inlineSchema": "generator client {\n  provider      = \"prisma-client-js\"\n  output        = \"./client\"\n  binaryTargets = [\"native\", \"debian-openssl-1.1.x\"]\n}\n\ndatasource db {\n  provider = \"mysql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel parameter {\n  parameterId Int      @id @default(autoincrement())\n  date        DateTime @db.Date\n  height      Decimal  @db.Decimal(5, 2)\n  weight      Decimal  @db.Decimal(5, 2)\n  sleepStart  DateTime @db.Time(0)\n  sleepEnd    DateTime @db.Time(0)\n  calorie     Int\n  protein     Int\n  cabohydrate Int\n  fat         Int\n  userId      Int\n  scoreId     Int\n  suggestId   Int\n  score       score    @relation(fields: [scoreId], references: [scoreId], onUpdate: Restrict, map: \"scoreId\")\n  suggest     suggest  @relation(fields: [suggestId], references: [suggestId], onUpdate: Restrict, map: \"suggestId\")\n  users       users    @relation(fields: [userId], references: [id], onUpdate: Restrict, map: \"userId\")\n\n  @@index([scoreId], map: \"scoreId\")\n  @@index([userId], map: \"userId\")\n  @@index([suggestId], map: \"suggestId\")\n}\n\nmodel score {\n  scoreId          Int         @id @default(autoincrement())\n  totalScore       Float       @db.Float\n  BMIScore         Float       @db.Float\n  sleepScore       Float       @db.Float\n  calorieScore     Float       @db.Float\n  proteinScore     Float       @db.Float\n  cabohydrateScore Float       @db.Float\n  fatScore         Float       @db.Float\n  name             String      @db.VarChar(255)\n  parameter        parameter[]\n}\n\nmodel suggest {\n  suggestId          Int         @id @default(autoincrement())\n  BMISuggest         String      @db.Text\n  sleepSuggest       String      @db.Text\n  calorieSuggest     String      @db.Text\n  proteinSuggest     String      @db.Text\n  cabohydrateSuggest String      @db.Text\n  fatSuggest         String      @db.Text\n  parameter          parameter[]\n}\n\nmodel users {\n  id        Int          @id @default(autoincrement())\n  username  String       @db.VarChar(255)\n  password  String       @db.VarChar(255)\n  birthyear Int\n  gender    users_gender\n  image     String?      @db.Text\n  parameter parameter[]\n}\n\nenum users_gender {\n  male\n  female\n}\n",
+  "inlineSchemaHash": "f5ca0c5d37aa4b6df6d641d5b4bcc427d92ac5fe555051e81a2c535089850425",
   "copyEngine": true
 }
 config.dirname = '/'
